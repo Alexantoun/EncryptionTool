@@ -28,7 +28,7 @@
                     <property name="can_focus">True</property>
                     <property name="valign">end</property>
                     <property name="hexpand">True</property>
-                    <property name="placeholder_text" translatable="yes">Enter file name</property>
+                    <property name="placeholder_text" translatable="yes">Search for a specific file by name</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -37,7 +37,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="NavigateButton">
+                  <object class="GtkButton" id="OpenButton">
                     <property name="label">gtk-open</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -45,6 +45,7 @@
                     <property name="hexpand">False</property>
                     <property name="use_stock">True</property>
                     <property name="always_show_image">True</property>
+                    <signal name="clicked" handler="onOpenClicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -54,7 +55,7 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="SearchButton">
+                  <object class="GtkButton" id="FindButton">
                     <property name="label">gtk-find</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
@@ -149,15 +150,22 @@
           </packing>
         </child>
         <child>
-          <object class="GtkTreeView" id="FileView">
+          <object class="GtkScrolledWindow">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <child internal-child="selection">
-              <object class="GtkTreeSelection"/>
+            <property name="shadow_type">in</property>
+            <child>
+              <object class="GtkTreeView" id="FileView">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <child internal-child="selection">
+                  <object class="GtkTreeSelection"/>
+                </child>
+              </object>
             </child>
           </object>
           <packing>
-            <property name="expand">True</property>
+            <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
@@ -167,16 +175,13 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <child>
-              <object class="GtkLabel" id="ErrorLabel">
+              <object class="GtkLabel" id="AlertLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin_left">5</property>
                 <property name="hexpand">True</property>
                 <property name="ellipsize">start</property>
                 <property name="xalign">0.019999999552965164</property>
-                <attributes>
-                  <attribute name="weight" value="medium"/>
-                  <attribute name="foreground" value="#efef29292929"/>
-                </attributes>
               </object>
               <packing>
                 <property name="expand">False</property>
