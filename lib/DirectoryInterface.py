@@ -11,7 +11,7 @@ def GetDirectoryContents(path):
 
     for file in contents:
         fullPath = os.path.join(path, file)
-        size = os.path.getsize(fullPath)
+        size = float("{:.2f}".format(int(os.path.getsize(fullPath)) / 1000))
         lastMod = os.path.getmtime(fullPath)
         lastMod = datetime.fromtimestamp(lastMod).strftime('%H:%M:%S %m-%d-%Y')
         fileName.append(file)
@@ -20,4 +20,3 @@ def GetDirectoryContents(path):
         print(f'\t{file}\t{size}\t{lastMod}')
 
     return zip(fileName, fileSize, modified)
-

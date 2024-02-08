@@ -3,7 +3,8 @@ import os
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk as gtk
-from lib.FileController import GetDirectoryContents
+
+from lib.DirectoryInterface import GetDirectoryContents
 import lib.Constants as const
 
 ######################################################################################################
@@ -12,7 +13,7 @@ class EncryptionControl:
     def onWindowDestroy(self, widget):
         print('Closing application')
         gtk.main_quit()
-
+######################################################################################################
     def populateListView(self, path):
         print('Populating list view with:\n\t')  
         directoryContents = GetDirectoryContents(path)
@@ -20,7 +21,8 @@ class EncryptionControl:
         for file in directoryContents:
             store.append([str(file[const.NAME_INDEX]), str(file[const.SIZE_INDEX]), str(file[const.MODIFIED_INDEX])])
         self.contentsView.set_model(store)
-    
+
+######################################################################################################
     def onToggle(self, button): #maybe loop through all three and use a dict to associate a button with an algorithm flag
         if self.radioButton1.get_active():
             self.Algorithm = 'RSA'
@@ -31,7 +33,8 @@ class EncryptionControl:
         else:
             print('Error selecting algorithm')
         print(f'{self.Algorithm} was selected')
-        
+
+###################################################################################################### 
     def onOpenClicked(self, button):
         print('Open button clicked')
         navBox = gtk.FileChooserDialog(title = "Navigate to directory", parent = None, action = gtk.FileChooserAction.SELECT_FOLDER)
@@ -51,6 +54,7 @@ class EncryptionControl:
         
         navBox.hide()
 
+######################################################################################################
     def onFindClick(self, button):
         print('Find button clicked')
         searchStr = self.filterSearch.get_text()
@@ -63,16 +67,18 @@ class EncryptionControl:
             self.alertLabel.set_markup(const.ERROR_NO_INPUT_IN_SEARCH_BAR)
             self.contentsView.set_model(self.unfilteredStore)
 
+######################################################################################################
     def prepareListView(self):
         store = gtk.ListStore(str, str, str)
         self.contentsView.set_model(store)
-        # Here, text=0 means that the CellRendererText (renderer) should retrieve the text to display from the first column (index 0) of the TreeStore model.
+        # Here, text=0 means that the CellRendererText should retrieve the text to display from the first column of the TreeStore model.
         self.contentsView.append_column(gtk.TreeViewColumn('File Name', gtk.CellRendererText(),  text=const.NAME_INDEX))
-        self.contentsView.append_column(gtk.TreeViewColumn('Size', gtk.CellRendererText(), text=const.SIZE_INDEX))
+        self.contentsView.append_column(gtk.TreeViewColumn('Size (kB)', gtk.CellRendererText(), text=const.SIZE_INDEX))
         self.contentsView.append_column(gtk.TreeViewColumn('Last Modified', gtk.CellRendererText(), text=const.MODIFIED_INDEX))
         #Setting UI behavior of columns
         column = self.contentsView.get_column(const.NAME_INDEX)
         column.set_sort_column_id(const.NAME_INDEX)
+        column.set_min_width(200)        
         column.set_expand(True)
 
         column = self.contentsView.get_column(const.SIZE_INDEX)
@@ -80,14 +86,17 @@ class EncryptionControl:
         column.set_max_width(200)
         
         column = self.contentsView.get_column(const.MODIFIED_INDEX)
+        column.set_min_width(200)
         column.set_max_width(200)
         self.unfilteredStore = store        
 
+######################################################################################################
     def filterTreeViewByInput(self, searchStr:str):
         filterStore = self.unfilteredStore.filter_new() 
         filterStore.set_visible_func(self.getRowsWithSubstringInName, data=searchStr)            
         self.contentsView.set_model(filterStore)
 
+######################################################################################################
         #Need to define a function to filter the treeview by.
         #parameters are (self, treeViewModel, rowIterator, dataToMatch). Method must match the signature
     def getRowsWithSubstringInName(self, model, iter, data):#<-- signature
@@ -96,16 +105,19 @@ class EncryptionControl:
         treeViewModel = model
         nameInRow = treeViewModel[rowIterator][const.NAME_INDEX] 
         return model[iter][const.NAME_INDEX].find(stringToMatch) != -1
-
+    
+######################################################################################################
     def __init__(self): 
         builder = gtk.Builder()
         builder.add_from_file('./forms/MainWindow.glade')
         builder.connect_signals(self)
         self.getObjects(builder)
         self.prepareListView()
-        self.window.set_default_size(680, 420)
+        self.window.set_default_size(680, 420)      
+        print(f'encrypt button name {self.encryptButton.get_name()}')  
         self.window.show()
 
+######################################################################################################
     def getObjects(self, builder):
         self.window = builder.get_object('MainWindow')
         self.radioButton1 = builder.get_object('Algo1')
