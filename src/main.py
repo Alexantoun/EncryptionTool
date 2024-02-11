@@ -3,9 +3,11 @@ import os
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk as gtk
+from gi.repository import Gdk
 
 from lib.DirectoryInterface import GetDirectoryContents
 import lib.Constants as const
+import lib.CSSProvider as cssProvider
 
 ######################################################################################################
         
@@ -13,6 +15,7 @@ class EncryptionControl:
     def onWindowDestroy(self, widget):
         print('Closing application')
         gtk.main_quit()
+
 ######################################################################################################
     def populateListView(self, path):
         print('Populating list view with:\n\t')  
@@ -71,7 +74,7 @@ class EncryptionControl:
     def prepareListView(self):
         store = gtk.ListStore(str, str, str)
         self.contentsView.set_model(store)
-        # Here, text=0 means that the CellRendererText should retrieve the text to display from the first column of the TreeStore model.
+        # Here, text=n means that the CellRendererText should retrieve the text to display from the nth column of the TreeStore model.
         self.contentsView.append_column(gtk.TreeViewColumn('File Name', gtk.CellRendererText(),  text=const.NAME_INDEX))
         self.contentsView.append_column(gtk.TreeViewColumn('Size (kB)', gtk.CellRendererText(), text=const.SIZE_INDEX))
         self.contentsView.append_column(gtk.TreeViewColumn('Last Modified', gtk.CellRendererText(), text=const.MODIFIED_INDEX))
@@ -101,9 +104,6 @@ class EncryptionControl:
         #parameters are (self, treeViewModel, rowIterator, dataToMatch). Method must match the signature
     def getRowsWithSubstringInName(self, model, iter, data):#<-- signature
         stringToMatch = data
-        rowIterator = iter
-        treeViewModel = model
-        nameInRow = treeViewModel[rowIterator][const.NAME_INDEX] 
         return model[iter][const.NAME_INDEX].find(stringToMatch) != -1
     
 ######################################################################################################
@@ -114,7 +114,8 @@ class EncryptionControl:
         self.getObjects(builder)
         self.prepareListView()
         self.window.set_default_size(680, 420)      
-        print(f'encrypt button name {self.encryptButton.get_name()}')  
+        self.encryptButton.set_name('encryptButton')
+        print(f'encrypt button name: {self.encryptButton.get_name()}')  
         self.window.show()
 
 ######################################################################################################
@@ -128,8 +129,8 @@ class EncryptionControl:
         self.encryptButton = builder.get_object('EncryptButton')
         self.alertLabel = builder.get_object('AlertLabel')
         self.contentsView = builder.get_object('FileView')
-        
         self.filterSearch = builder.get_object('SearchEntry')
+
         EnterKeyPressedInSearchBar = "activate"
         self.filterSearch.connect(EnterKeyPressedInSearchBar, self.onFindClick)
 
