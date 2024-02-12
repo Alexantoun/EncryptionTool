@@ -7,10 +7,9 @@ from gi.repository import Gdk
 
 from lib.DirectoryInterface import GetDirectoryContents
 import lib.Constants as const
-import lib.CSSProvider as cssProvider
+import lib.Restyle as widgetStyler
 
-######################################################################################################
-        
+######################################################################################################    
 class EncryptionControl:
     def onWindowDestroy(self, widget):
         print('Closing application')
@@ -114,9 +113,7 @@ class EncryptionControl:
         self.getObjects(builder)
         self.prepareListView()
         self.window.set_default_size(680, 420)      
-        self.encryptButton.set_name('encryptButton')
-        print(f'encrypt button name: {self.encryptButton.get_name()}')  
-        self.window.show()
+        self.window.show_all()
 
 ######################################################################################################
     def getObjects(self, builder):
@@ -126,11 +123,14 @@ class EncryptionControl:
         self.radioButton3 = builder.get_object('Algo3')
         self.openButton = builder.get_object('OpenButton')
         self.findButton = builder.get_object('FindButton')
-        self.encryptButton = builder.get_object('EncryptButton')
+
         self.alertLabel = builder.get_object('AlertLabel')
         self.contentsView = builder.get_object('FileView')
         self.filterSearch = builder.get_object('SearchEntry')
 
+        self.encryptButton = builder.get_object('EncryptButton')
+        widgetStyler.makeGreenButton(self.encryptButton)
+        
         EnterKeyPressedInSearchBar = "activate"
         self.filterSearch.connect(EnterKeyPressedInSearchBar, self.onFindClick)
 
