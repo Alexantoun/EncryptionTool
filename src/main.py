@@ -3,28 +3,18 @@ import os
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk as gtk
-from gi.repository import Gdk
 
 from lib.DirectoryInterface import GetDirectoryContents
 import lib.Constants as const
 import lib.Restyle as widgetStyler
 
-######################################################################################################    
+###########################################################################    
 class EncryptionControl:
     def onWindowDestroy(self, widget):
         print('Closing application')
         gtk.main_quit()
 
-######################################################################################################
-    def populateListView(self, path):
-        print('Populating list view with:\n\t')  
-        directoryContents = GetDirectoryContents(path)
-        store = self.contentsView.get_model()
-        for file in directoryContents:
-            store.append([str(file[const.NAME_INDEX]), str(file[const.SIZE_INDEX]), str(file[const.MODIFIED_INDEX])])
-        self.contentsView.set_model(store)
-
-######################################################################################################
+###########################################################################
     def onToggle(self, button): #maybe loop through all three and use a dict to associate a button with an algorithm flag
         if self.radioButton1.get_active():
             self.Algorithm = 'RSA'
@@ -36,7 +26,7 @@ class EncryptionControl:
             print('Error selecting algorithm')
         print(f'{self.Algorithm} was selected')
 
-###################################################################################################### 
+########################################################################### 
     def onOpenClicked(self, button):
         print('Open button clicked')
         navBox = gtk.FileChooserDialog(title = "Navigate to directory", parent = None, action = gtk.FileChooserAction.SELECT_FOLDER)
@@ -48,15 +38,20 @@ class EncryptionControl:
         if response == gtk.ResponseType.OK:
             path = navBox.get_current_folder()
             print(f'\tFolder selected: {path}')
-            self.alertLabel.set_markup(const.FOLDER_SELECTED(path)) 
+
+            self.openedDirectoryPath = path
+            self.unfilteredStore.clear()
+            self.selectedFile = None
+            self.alertLabel.set_markup(const.FOLDER_SELECTED(path))
             self.populateListView(path)
+            widgetStyler.disableButton(self.encryptButton)
 
         elif response == gtk.ResponseType.CANCEL:
             print(f'\tFolder navigation cancelled')
-        
+
         navBox.hide()
 
-######################################################################################################
+###########################################################################
     def onFindClick(self, button):
         print('Find button clicked')
         searchStr = self.filterSearch.get_text()
@@ -69,7 +64,31 @@ class EncryptionControl:
             self.alertLabel.set_markup(const.ERROR_NO_INPUT_IN_SEARCH_BAR)
             self.contentsView.set_model(self.unfilteredStore)
 
-######################################################################################################
+###########################################################################
+    def onEncryptClicked(self, button):
+        print('Encrypt button clicked') #Figure out how to get what is selected from tree view
+        if self.selectedFile != None:
+            print(f'\t{self.selectedFile} chosen for encryption')
+        else:
+            print('No file for encryption was selected')
+            self.alertLabel.set_markup(const.ERROR_ENCRYPT_CLICKED_WITHOUT_FILE_SELECTED)
+
+###########################################################################
+    def onContentSelectionChanged(self, treeViewSelection):
+        model, treeItr = treeViewSelection.get_selected()
+        if treeItr != None:
+            self.selectedFile = model[treeItr][const.NAME_INDEX]
+            self.alertLabel.set_text('You selected \''+ self.selectedFile +'\'')
+            if not self.encryptButton.get_sensitive():
+                self.encryptButton.set_sensitive(True)
+            
+            #Change button color based on if the file is encrypted or not                            
+            widgetStyler.makeButtonGreen(self.encryptButton)
+            print(f'You selected: {self.selectedFile}')
+        else:
+            self.selectedFile = None
+
+###########################################################################
     def prepareListView(self):
         store = gtk.ListStore(str, str, str)
         self.contentsView.set_model(store)
@@ -78,34 +97,49 @@ class EncryptionControl:
         self.contentsView.append_column(gtk.TreeViewColumn('Size (kB)', gtk.CellRendererText(), text=const.SIZE_INDEX))
         self.contentsView.append_column(gtk.TreeViewColumn('Last Modified', gtk.CellRendererText(), text=const.MODIFIED_INDEX))
         #Setting UI behavior of columns
-        column = self.contentsView.get_column(const.NAME_INDEX)
-        column.set_sort_column_id(const.NAME_INDEX)
-        column.set_min_width(200)        
-        column.set_expand(True)
+        nameColumn = self.contentsView.get_column(const.NAME_INDEX)
+        nameColumn.set_sort_column_id(const.NAME_INDEX)
+        nameColumn.set_min_width(200)        
+        nameColumn.set_expand(True)
 
-        column = self.contentsView.get_column(const.SIZE_INDEX)
-        column.set_min_width(80)
-        column.set_max_width(200)
+        sizeColumn = self.contentsView.get_column(const.SIZE_INDEX)
+        sizeColumn.set_min_width(80)
+        sizeColumn.set_max_width(200)
         
-        column = self.contentsView.get_column(const.MODIFIED_INDEX)
-        column.set_min_width(200)
-        column.set_max_width(200)
-        self.unfilteredStore = store        
+        dateColumn = self.contentsView.get_column(const.MODIFIED_INDEX)
+        dateColumn.set_min_width(200)
+        dateColumn.set_max_width(200)
+        
+        self.unfilteredStore = store
+        self.contentSelection = self.contentsView.get_selection()
+        self.contentSelection.connect("changed", self.onContentSelectionChanged)
+        self.selectedFile = None
 
-######################################################################################################
+###########################################################################
+    def populateListView(self, path):
+        print('Populating list view with:\n\t')
+        directoryContents = GetDirectoryContents(path)
+
+        store = self.contentsView.get_model()
+        for file in directoryContents:
+            store.append([str(file[const.NAME_INDEX]), str(file[const.SIZE_INDEX]), str(file[const.MODIFIED_INDEX])])
+            
+        self.contentsView.set_model(store)
+        
+###########################################################################
     def filterTreeViewByInput(self, searchStr:str):
         filterStore = self.unfilteredStore.filter_new() 
         filterStore.set_visible_func(self.getRowsWithSubstringInName, data=searchStr)            
         self.contentsView.set_model(filterStore)
 
-######################################################################################################
+###########################################################################
         #Need to define a function to filter the treeview by.
         #parameters are (self, treeViewModel, rowIterator, dataToMatch). Method must match the signature
     def getRowsWithSubstringInName(self, model, iter, data):#<-- signature
         stringToMatch = data
         return model[iter][const.NAME_INDEX].find(stringToMatch) != -1
     
-######################################################################################################
+###########################################################################
     def __init__(self): 
         builder = gtk.Builder()
         builder.add_from_file('./forms/MainWindow.glade')
@@ -115,7 +149,7 @@ class EncryptionControl:
         self.window.set_default_size(680, 420)      
         self.window.show_all()
 
-######################################################################################################
+###########################################################################
     def getObjects(self, builder):
         self.window = builder.get_object('MainWindow')
         self.radioButton1 = builder.get_object('Algo1')
@@ -129,7 +163,7 @@ class EncryptionControl:
         self.filterSearch = builder.get_object('SearchEntry')
 
         self.encryptButton = builder.get_object('EncryptButton')
-        widgetStyler.makeGreenButton(self.encryptButton)
+        self.encryptButton.set_sensitive(False)
         
         EnterKeyPressedInSearchBar = "activate"
         self.filterSearch.connect(EnterKeyPressedInSearchBar, self.onFindClick)

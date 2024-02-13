@@ -193,6 +193,7 @@
             <child>
               <object class="GtkButton" id="EncryptButton">
                 <property name="label">Encrypt</property>
+                <property name="name">encryptButton</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
