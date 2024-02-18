@@ -7,21 +7,29 @@ from gi.repository import Gtk as gtk
 from lib.DirectoryInterface import GetDirectoryContents
 import lib.Constants as const
 import lib.Restyle as widgetStyler
+import lib.EncryptionManager as encryptionManager
 
 ###########################################################################    
 class EncryptionControl:
     def onWindowDestroy(self, widget):
         print('Closing application')
         gtk.main_quit()
-
+        print('Tasks still required: ')
+        print('\tNeed to have the color of encrypt button be determined by whethor or not its an encrypted file')
+        print('\tConstants.py needs renaming as there are methods in there to return a string')
+        print('\tDirectoryInterface should get renamed to something else')
+        
 ###########################################################################
     def onToggle(self, button): #maybe loop through all three and use a dict to associate a button with an algorithm flag
-        if self.radioButton1.get_active():
+        if self.RSAButton.get_active():
             self.Algorithm = 'RSA'
-        elif self.radioButton2.get_active():
+            self.encryptionManager.selectedAlgorithm = 'RSA'
+        elif self.AESButton.get_active():
             self.Algorithm = 'AES'
-        elif self.radioButton3.get_active():
+            self.encryptionManager.selectedAlgorithm = 'AES-CBC'
+        elif self.BlowfishButton.get_active():
             self.Algorithm = 'Blowfish'
+            self.encryptionManager.selectedAlgorithm = 'Blowfish'
         else:
             print('Error selecting algorithm')
         print(f'{self.Algorithm} was selected')
@@ -39,12 +47,11 @@ class EncryptionControl:
             path = navBox.get_current_folder()
             print(f'\tFolder selected: {path}')
 
-            self.openedDirectoryPath = path
             self.unfilteredStore.clear()
             self.selectedFile = None
+            self.encryptionManager.pathToFile = path
             self.alertLabel.set_markup(const.FOLDER_SELECTED(path))
-            self.populateListView(path)
-            widgetStyler.disableButton(self.encryptButton)
+            self.populateListView(path)            
 
         elif response == gtk.ResponseType.CANCEL:
             print(f'\tFolder navigation cancelled')
@@ -63,13 +70,16 @@ class EncryptionControl:
             print('\tfind button clicked with no input, removing filters')
             self.alertLabel.set_markup(const.ERROR_NO_INPUT_IN_SEARCH_BAR)
             self.contentsView.set_model(self.unfilteredStore)
+            self.selectedFile = None
+            widgetStyler.disableButton(self.encryptButton)
 
 ###########################################################################
     def onEncryptClicked(self, button):
-        print('Encrypt button clicked') #Figure out how to get what is selected from tree view
+        print('Encrypt button clicked')
         if self.selectedFile != None:
             print(f'\t{self.selectedFile} chosen for encryption')
-        else:
+            self.encryptionManager.encryptButton()
+        else:#I think this else clause is redundant because button is disabled if no file selected
             print('No file for encryption was selected')
             self.alertLabel.set_markup(const.ERROR_ENCRYPT_CLICKED_WITHOUT_FILE_SELECTED)
 
@@ -79,13 +89,17 @@ class EncryptionControl:
         if treeItr != None:
             self.selectedFile = model[treeItr][const.NAME_INDEX]
             self.alertLabel.set_text('You selected \''+ self.selectedFile +'\'')
+            self.encryptionManager.selectedFile = self.selectedFile
+            
             if not self.encryptButton.get_sensitive():
                 self.encryptButton.set_sensitive(True)
+                #Change button color based on if the file is encrypted or not                            
+                widgetStyler.makeButtonGreen(self.encryptButton)            
             
-            #Change button color based on if the file is encrypted or not                            
-            widgetStyler.makeButtonGreen(self.encryptButton)
             print(f'You selected: {self.selectedFile}')
+            
         else:
+            widgetStyler.disableButton(self.encryptButton)
             self.selectedFile = None
 
 ###########################################################################
@@ -129,11 +143,11 @@ class EncryptionControl:
 ###########################################################################
     def filterTreeViewByInput(self, searchStr:str):
         filterStore = self.unfilteredStore.filter_new() 
+        #Need to define a function to filter the treeview by.
         filterStore.set_visible_func(self.getRowsWithSubstringInName, data=searchStr)            
         self.contentsView.set_model(filterStore)
 
 ###########################################################################
-        #Need to define a function to filter the treeview by.
         #parameters are (self, treeViewModel, rowIterator, dataToMatch). Method must match the signature
     def getRowsWithSubstringInName(self, model, iter, data):#<-- signature
         stringToMatch = data
@@ -144,20 +158,22 @@ class EncryptionControl:
         builder = gtk.Builder()
         builder.add_from_file('./forms/MainWindow.glade')
         builder.connect_signals(self)
-        self.getObjects(builder)
+        self.getObjects(builder)        
+        self.encryptionManager = encryptionManager.EncryptionManager()
+        self.onToggle(None)
         self.prepareListView()
         self.window.set_default_size(680, 420)      
+        self.openedDirectoryPath = ''
         self.window.show_all()
 
 ###########################################################################
     def getObjects(self, builder):
         self.window = builder.get_object('MainWindow')
-        self.radioButton1 = builder.get_object('Algo1')
-        self.radioButton2 = builder.get_object('Algo2')
-        self.radioButton3 = builder.get_object('Algo3')
+        self.RSAButton = builder.get_object('Algo1')
+        self.AESButton = builder.get_object('Algo2')
+        self.BlowfishButton = builder.get_object('Algo3')
         self.openButton = builder.get_object('OpenButton')
         self.findButton = builder.get_object('FindButton')
-
         self.alertLabel = builder.get_object('AlertLabel')
         self.contentsView = builder.get_object('FileView')
         self.filterSearch = builder.get_object('SearchEntry')

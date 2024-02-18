@@ -9,6 +9,7 @@ def makeButtonGreen(button):
     
     styleContext = button.get_style_context()
     classes = styleContext.list_classes()
+    button.set_label('Encrypt')
     for styleClass in classes:
         styleContext.remove_class(styleClass)
 
@@ -27,6 +28,7 @@ def disableButton(button):
     
     styleContext.add_provider(cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
     styleContext.add_class('disabledButton')
+    button.set_label('Encrypt')
     button.set_sensitive(False)
 
 # Gtk has a known issue where background-color doesnt work so need to use background-image instead
@@ -41,7 +43,18 @@ GREEN_BACKGROUND_WHITE_TEXT_STYLES = """
     .greenButtonWhiteText:active{
         background-image: image(#4E6A04); 
     }
+    """
 
+RED_BACKGROUND_WHITE_TEXT_STYLES = """
+    .redButtonWhiteText {
+        background-image: image(#cccc000000004e9a06); 
+        color: white;
+        font-weight: bold;
+    }
+
+    .redButtonWhiteText:active{
+        background-image: image(#4E6A04); 
+    }
     """
 
 DISABLED_BUTTON_STYLES = """

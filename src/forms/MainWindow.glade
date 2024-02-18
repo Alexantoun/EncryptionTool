@@ -101,7 +101,7 @@
                 </child>
                 <child>
                   <object class="GtkRadioButton" id="Algo2">
-                    <property name="label" translatable="yes">AES</property>
+                    <property name="label" translatable="yes">AES-CBC</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
@@ -192,7 +192,7 @@
             </child>
             <child>
               <object class="GtkButton" id="EncryptButton">
-                <property name="label">Encrypt</property>
+                <property name="label">button</property>
                 <property name="name">encryptButton</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
