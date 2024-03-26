@@ -8,6 +8,7 @@ from lib.DirectoryInterface import GetDirectoryContents
 import lib.Constants as const
 import lib.Restyle as widgetStyler
 import lib.EncryptionManager as encryptionManager
+from lib.EncryptionManager import Algorithms_E as encryptionAlgorithms
 
 ###########################################################################    
 class EncryptionControl:
@@ -22,17 +23,13 @@ class EncryptionControl:
 ###########################################################################
     def onToggle(self, button): #maybe loop through all three and use a dict to associate a button with an algorithm flag
         if self.RSAButton.get_active():
-            self.Algorithm = 'RSA'
-            self.encryptionManager.selectedAlgorithm = 'RSA'
+            self.encryptionManager.setAlgorithm(encryptionAlgorithms.RSA)
         elif self.AESButton.get_active():
-            self.Algorithm = 'AES'
-            self.encryptionManager.selectedAlgorithm = 'AES-CBC'
+            self.encryptionManager.setAlgorithm(encryptionAlgorithms.AES_CBC)
         elif self.BlowfishButton.get_active():
-            self.Algorithm = 'Blowfish'
-            self.encryptionManager.selectedAlgorithm = 'Blowfish'
+            self.encryptionManager.setAlgorithm(encryptionAlgorithms.B_FISH)
         else:
-            print('Error selecting algorithm')
-        print(f'{self.Algorithm} was selected')
+            print('Error selecting algorithm')        
 
 ########################################################################### 
     def onOpenClicked(self, button):
@@ -159,7 +156,7 @@ class EncryptionControl:
         builder.add_from_file('./forms/MainWindow.glade')
         builder.connect_signals(self)
         self.getObjects(builder)        
-        self.encryptionManager = encryptionManager.EncryptionManager()
+        self.encryptionManager = encryptionManager.Manager()
         self.onToggle(None)
         self.prepareListView()
         self.window.set_default_size(680, 420)      

@@ -2,6 +2,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
+###########################################################################
 def makeButtonGreen(button):
     print('Modifying button color')
     cssProvider = Gtk.CssProvider()
@@ -16,6 +17,7 @@ def makeButtonGreen(button):
     styleContext.add_provider(cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
     styleContext.add_class('greenButtonWhiteText')
 
+###########################################################################
 def disableButton(button):
     print('Disabling button')
     cssProvider = Gtk.CssProvider()
@@ -40,7 +42,7 @@ GREEN_BACKGROUND_WHITE_TEXT_STYLES = """
         font-weight: bold;
     }
 
-    .greenButtonWhiteText:active{
+    .greenButtonWhiteText:active {
         background-image: image(#4E6A04); 
     }
     """
@@ -52,7 +54,7 @@ RED_BACKGROUND_WHITE_TEXT_STYLES = """
         font-weight: bold;
     }
 
-    .redButtonWhiteText:active{
+    .redButtonWhiteText:active {
         background-image: image(#4E6A04); 
     }
     """
