@@ -75,7 +75,7 @@ class EncryptionControl:
         print('Encrypt button clicked')
         if self.selectedFile != None:
             print(f'\t{self.selectedFile} chosen for encryption')
-            self.encryptionManager.encryptButton()
+            self.encryptionManager.onEncryptClicked()
         else:#I think this else clause is redundant because button is disabled if no file selected
             print('No file for encryption was selected')
             self.alertLabel.set_markup(const.ERROR_ENCRYPT_CLICKED_WITHOUT_FILE_SELECTED)
@@ -86,15 +86,16 @@ class EncryptionControl:
         if treeItr != None:
             self.selectedFile = model[treeItr][const.NAME_INDEX]
             self.alertLabel.set_text('You selected \''+ self.selectedFile +'\'')
-            self.encryptionManager.selectedFile = self.selectedFile
             
             if not self.encryptButton.get_sensitive():
                 self.encryptButton.set_sensitive(True)
-                #Change button color based on if the file is encrypted or not                            
+                # widgetStyler.makeButtonGreen(self.encryptButton)                        
+            #Change button color based on if the file is encrypted or not
+            if self.encryptionManager.checkSelectedFileEncryptionStatus(self.selectedFile):
                 widgetStyler.makeButtonGreen(self.encryptButton)            
-            
-            print(f'You selected: {self.selectedFile}')
-            
+            else:
+                self.encryptButton.set_label('Decrypt')
+
         else:
             widgetStyler.disableButton(self.encryptButton)
             self.selectedFile = None
@@ -138,7 +139,7 @@ class EncryptionControl:
         self.contentsView.set_model(store)
         
 ###########################################################################
-    def filterTreeViewByInput(self, searchStr:str):
+    def filterTreeViewByInput(self, searchStr : str):
         filterStore = self.unfilteredStore.filter_new() 
         #Need to define a function to filter the treeview by.
         filterStore.set_visible_func(self.getRowsWithSubstringInName, data=searchStr)            
@@ -157,6 +158,7 @@ class EncryptionControl:
         builder.connect_signals(self)
         self.getObjects(builder)        
         self.encryptionManager = encryptionManager.Manager()
+        self.encryptButton.set_label('Encrypt')
         self.onToggle(None)
         self.prepareListView()
         self.window.set_default_size(680, 420)      

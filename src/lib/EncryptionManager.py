@@ -7,8 +7,12 @@ class Algorithms_E(Enum):
     B_FISH  = 2
 
 class Manager:
-    def encryptButton(self):
-        print(f'Will encrypt file {self.pathToFile}/{self.selectedFile}, with algorithm {self.algorithm}')     
+    def onEncryptClicked(self):
+        print(f'Will encrypt file {self.pathToFile}/{self.selectedFile}, with algorithm {self.algorithm}')
+        self.fileCipher.encrypt(self.pathToFile, 'placeholder_key')
+
+    def onDecryptClicked(self):
+        print(f'Will decrypt file {self.pathToFile}/{self.selectedFile}, with algorithm {self.algorithm}')
 
     def setAlgorithm(self, algorithm : Algorithms_E):
         self.algorithm = algorithm
@@ -26,8 +30,13 @@ class Manager:
         
         print(f'Encryption algorithm {debug} selected.')
 
+    def checkSelectedFileEncryptionStatus(self, file : str) -> bool : 
+        self.file = file
+        print(f'File encryptor focusing on {self.pathToFile}/{self.file}')
+        return False
+        
     def __init__(self):
         self.selectedFile : str
         self.pathToFile : str
         self.algorithm : Algorithms_E
-        self.fileCipher : FilelCipher
+        self.fileCipher : FileCipher
