@@ -7,7 +7,8 @@ class Algorithms_E(Enum):
     B_FISH  = 2
 
 class Manager:
-    def onEncryptClicked(self):
+    def onEncryptClicked(self, selectedFile : str):
+        self.selectedFile = selectedFile
         print(f'Will encrypt file {self.pathToFile}/{self.selectedFile}, with algorithm {self.algorithm}')
         self.fileCipher.encrypt(self.pathToFile, 'placeholder_key')
 
@@ -33,10 +34,12 @@ class Manager:
     def checkSelectedFileEncryptionStatus(self, file : str) -> bool : 
         self.file = file
         print(f'File encryptor focusing on {self.pathToFile}/{self.file}')
-        return False
+        self.deleteMe_alternateButtonColor = not self.deleteMe_alternateButtonColor
+        return self.deleteMe_alternateButtonColor
         
     def __init__(self):
         self.selectedFile : str
         self.pathToFile : str
         self.algorithm : Algorithms_E
         self.fileCipher : FileCipher
+        self.deleteMe_alternateButtonColor = False

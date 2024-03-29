@@ -4,7 +4,7 @@ from gi.repository import Gtk
 
 ###########################################################################
 def makeButtonGreen(button):
-    print('Modifying button color')
+    print('Modifying button color to green')
     cssProvider = Gtk.CssProvider()
     cssProvider.load_from_data(GREEN_BACKGROUND_WHITE_TEXT_STYLES.encode())
     
@@ -16,6 +16,21 @@ def makeButtonGreen(button):
 
     styleContext.add_provider(cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
     styleContext.add_class('greenButtonWhiteText')
+
+###########################################################################
+def makeButtonRed(button):
+    print('Modifying button color to red')
+    cssProvider = Gtk.CssProvider()
+    cssProvider.load_from_data(RED_BACKGROUND_WHITE_TEXT_STYLES.encode())
+    
+    styleContext = button.get_style_context()
+    classes = styleContext.list_classes()
+    button.set_label('Decrypt')
+    for styleClass in classes:
+        styleContext.remove_class(styleClass)
+
+    styleContext.add_provider(cssProvider, Gtk.STYLE_PROVIDER_PRIORITY_USER)
+    styleContext.add_class('redButtonWhiteText')
 
 ###########################################################################
 def disableButton(button):
@@ -49,13 +64,13 @@ GREEN_BACKGROUND_WHITE_TEXT_STYLES = """
 
 RED_BACKGROUND_WHITE_TEXT_STYLES = """
     .redButtonWhiteText {
-        background-image: image(#cccc000000004e9a06); 
+        background-image: image(#A93B3F); 
         color: white;
         font-weight: bold;
     }
 
     .redButtonWhiteText:active {
-        background-image: image(#4E6A04); 
+        background-image: image(#902A2D); 
     }
     """
 

@@ -75,7 +75,7 @@ class EncryptionControl:
         print('Encrypt button clicked')
         if self.selectedFile != None:
             print(f'\t{self.selectedFile} chosen for encryption')
-            self.encryptionManager.onEncryptClicked()
+            self.encryptionManager.onEncryptClicked(self.selectedFile)
         else:#I think this else clause is redundant because button is disabled if no file selected
             print('No file for encryption was selected')
             self.alertLabel.set_markup(const.ERROR_ENCRYPT_CLICKED_WITHOUT_FILE_SELECTED)
@@ -87,14 +87,14 @@ class EncryptionControl:
             self.selectedFile = model[treeItr][const.NAME_INDEX]
             self.alertLabel.set_text('You selected \''+ self.selectedFile +'\'')
             
-            if not self.encryptButton.get_sensitive():
-                self.encryptButton.set_sensitive(True)
-                # widgetStyler.makeButtonGreen(self.encryptButton)                        
+            # if not self.encryptButton.get_sensitive():
+            self.encryptButton.set_sensitive(True)
+
             #Change button color based on if the file is encrypted or not
             if self.encryptionManager.checkSelectedFileEncryptionStatus(self.selectedFile):
                 widgetStyler.makeButtonGreen(self.encryptButton)            
             else:
-                self.encryptButton.set_label('Decrypt')
+                widgetStyler.makeButtonRed(self.encryptButton)
 
         else:
             widgetStyler.disableButton(self.encryptButton)
