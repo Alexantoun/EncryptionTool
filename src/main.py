@@ -147,9 +147,9 @@ class EncryptionControl:
 
 ###########################################################################
         #parameters are (self, treeViewModel, rowIterator, dataToMatch). Method must match the signature
-    def getRowsWithSubstringInName(self, model, iter, data):#<-- signature
+    def getRowsWithSubstringInName(self, model, iter, data):
         stringToMatch = data
-        return model[iter][const.NAME_INDEX].find(stringToMatch) != -1
+        return model[iter][const.NAME_INDEX].lower().find(stringToMatch.lower()) != -1 
     
 ###########################################################################
     def __init__(self): 
@@ -180,8 +180,8 @@ class EncryptionControl:
         self.encryptButton = builder.get_object('EncryptButton')
         self.encryptButton.set_sensitive(False)
         
-        EnterKeyPressedInSearchBar = "activate"
-        self.filterSearch.connect(EnterKeyPressedInSearchBar, self.onFindClick)
+        enterKeyPressedInSearchBar = "activate"
+        self.filterSearch.connect(enterKeyPressedInSearchBar, self.onFindClick)
 
 if __name__ == '__main__':
     print('Running encryptor application')
