@@ -157,7 +157,7 @@ class EncryptionControl:
         builder.add_from_file('./forms/MainWindow.glade')
         builder.connect_signals(self)
         self.getObjects(builder)        
-        self.encryptionManager = encryptionManager.Manager()
+        self.encryptionManager = encryptionManager.Manager(self.window)
         self.encryptButton.set_label('Encrypt')
         self.onToggle(None)
         self.prepareListView()
