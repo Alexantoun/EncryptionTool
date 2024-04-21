@@ -7,17 +7,20 @@ class Algorithms_E(Enum):
     AES_CBC = 1
     B_FISH  = 2
 
+RESPONSE_TYPE_OK = PasswordPrompt.gtk.ResponseType.OK
+
 class Manager:
     def onEncryptClicked(self, selectedFile : str):
         self.selectedFile = selectedFile
         print(f'Will encrypt file {self.pathToFile}/{self.selectedFile}, with algorithm {self.algorithm}')
-        self.fileCipher.encrypt(self.pathToFile, 'placeholder_key')
         prompt = PasswordPrompt.PasswordPrompt(self.MainWindow)
         response = prompt.run()
-        if(response == PasswordPrompt.gtk.ResponseType.OK):
+        if(response == RESPONSE_TYPE_OK):
             key = prompt.get_entry()
-            print(f'Value = {response}')
-            print(f'The key entered is: {key}')
+            print(f'The key entered is: {key}')            
+            self.fileCipher.encrypt(self.pathToFile, key)
+        else:
+            print('Abort encryption')
 
         prompt.destroy()
         
