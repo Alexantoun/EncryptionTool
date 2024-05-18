@@ -4,20 +4,20 @@ class FileCipher:
     def __init__(self):
         print("Created FileCipher")
     
-    def encrypt(self, pathToFile : str , key : str):
+    def encrypt(self, filePath : str , key : str):
         pass
     
-    def Decrypt(self, pathToFile : str , key : str):
+    def Decrypt(self, filePath : str , key : str):
         print("BUILD THE DECRYPTION")
 
 class Blowfish(FileCipher):
-    def encrypt(self, pathToFile : str, key : str):
-        print(f'Need to implement Blowfish.\n\tpathToFile = {pathToFile}.\n\tKey = {key}')
+    def encrypt(self, filePath : str, key : str):
+        print(f'Need to implement Blowfish.\n\tFile Path = {filePath}.\n\tKey = {key}')
 
 class RSA(FileCipher):
-    def encrypt(self, pathToFile : str, key : str):
-        print(f'Need to implement RSA.\n\tpathToFile = {pathToFile}.\n\tKey = {key}')
+    def encrypt(self, filePath : str, key : str):
+        print(f'Need to implement RSA.\n\tFile Path = {filePath}.\n\tKey = {key}')
 
 class AES_CBC(FileCipher):
-    def encrypt(self, pathToFile : str, key : str):
-        print(f'Need to implement AES_CBC.\n\tpathToFile = {pathToFile}.\n\tKey = {key}')
+    def encrypt(self, filePath : str, key : str):
+        print(f'Need to implement AES_CBC.\n\tFile Path = {filePath}.\n\tKey = {key}')

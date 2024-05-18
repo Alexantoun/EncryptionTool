@@ -6,9 +6,9 @@ from gi.repository import Gtk as gtk
 from . import Constants as const
 
 ###########################################################################
-class PasswordPrompt(gtk.Dialog):
+class EncryptionPrompt(gtk.Dialog):
     def __init__(self, parent):
-        super().__init__(title=const.PASSWORD_PROMPT_TITLE, transient_for=parent, flags=0)
+        super().__init__(title=const.ENCRYPTION_PROMPT_TITLE, transient_for=parent, flags=0)
         self.set_default_size(250, 100)
         self.firstEntry = gtk.Entry()
         self.firstEntry.set_visibility(False)
@@ -47,6 +47,6 @@ class PasswordPrompt(gtk.Dialog):
 
 ###########################################################################
 if __name__ == "__main__":
-    win = PasswordPrompt(None)
+    win = EncryptionPrompt(None)
     response = win.run()
         

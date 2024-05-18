@@ -4,7 +4,9 @@ MODIFIED_INDEX = 2
 
 ERROR_ENCRYPT_CLICKED_WITHOUT_FILE_SELECTED = '<span foreground="#ff1a1a" weight="normal">No file was selected for encryption.</span>' 
 ERROR_NO_INPUT_IN_SEARCH_BAR = '<span foreground="#ff1a1a" weight="normal">No text was entered to search for. Removing filter.</span>'
-PASSWORD_PROMPT_TITLE = "Enter a password"
+
+ENCRYPTION_PROMPT_TITLE = "Enter a password"
+DECRYPTION_PROMPT_TITLE = "Enter the cipher key"
 
 def FOLDER_SELECTED(path:str) -> str:
     string = '<span foreground="#000000" weight="normal">Displaying content in '+path+'</span>'
