@@ -3,7 +3,7 @@
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk as gtk
-from . import Constants as const
+import lib.Constants as const
 
 ###########################################################################
 class EncryptionPrompt(gtk.Dialog):

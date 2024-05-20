@@ -198,7 +198,7 @@
                 <property name="can_focus">False</property>
                 <property name="receives_default">True</property>
                 <property name="always_show_image">True</property>
-                <signal name="clicked" handler="onEncryptClicked" swapped="no"/>
+                <signal name="clicked" handler="onCipherButtonClick" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>

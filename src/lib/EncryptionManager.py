@@ -1,6 +1,7 @@
 from . import FileCipher
 from enum import Enum
-from . import EncryptionPrompt
+import lib.EncryptionPrompt as EncryptionPrompt
+import lib.DecryptionPrompt as DecryptionPrompt
 
 class Algorithms_E(Enum):
     RSA     = 0
@@ -9,10 +10,10 @@ class Algorithms_E(Enum):
 
 RESPONSE_TYPE_OK = EncryptionPrompt.gtk.ResponseType.OK
 
+###########################################################################
 class Manager:
-    def onEncryptClicked(self, selectedFile : str):
-        self.selectedFile = selectedFile        
-        print(f'Will encrypt file {self.pathToFile}/{self.selectedFile}, with algorithm {self.algorithm}')
+    def encryptClicked(self):
+        print(f'\tEncrypting {self.pathToFile}/{self.selectedFile}, with algorithm {self.algorithm}')
         prompt = EncryptionPrompt.EncryptionPrompt(self.mainWindow)
         
         response = prompt.run()
@@ -22,13 +23,27 @@ class Manager:
             filePathStr = f'{self.pathToFile}/{self.selectedFile}'        
             self.fileCipher.encrypt(filePathStr, key)
         else:
-            print('Abort encryption')
+            print('\tAbort encryption')
 
         prompt.destroy()
-        
-    def onDecryptClicked(self):
-        print(f'Will decrypt file {self.pathToFile}/{self.selectedFile}, with algorithm {self.algorithm}')
 
+###########################################################################        
+    def decryptClicked(self):
+        print(f'\tDecrypting {self.pathToFile}/{self.selectedFile}, with algorithm {self.algorithm}')
+        prompt = DecryptionPrompt.DecryptionPrompt(self.mainWindow)
+        
+        response = prompt.run()
+        if(response == RESPONSE_TYPE_OK):
+            key = prompt.get_entry()
+            print(f'The key entered is: {key}')
+            filePathStr = f'{self.pathToFile}/{self.selectedFile}'        
+            self.fileCipher.encrypt(filePathStr, key)
+        else:
+            print('\tAbort decryption')
+
+        prompt.destroy()
+
+###########################################################################
     def setAlgorithm(self, algorithm : Algorithms_E):
         self.algorithm = algorithm
         debug : str
@@ -45,12 +60,24 @@ class Manager:
         
         print(f'Encryption algorithm {debug} selected.')
 
+###########################################################################
     def checkSelectedFileEncryptionStatus(self, file : str) -> bool : 
         self.selectedFile = file
         print(f'File encryptor focusing on {self.pathToFile}/{self.selectedFile}')
         self.deleteMe_alternateButtonColor = not self.deleteMe_alternateButtonColor
         return self.deleteMe_alternateButtonColor
-        
+
+###########################################################################
+    def onCipherButtonClick(self, selectedFile : str):
+        self.selectedFile = selectedFile        
+        print(f'Will operate on file {self.pathToFile}/{self.selectedFile}, with algorithm {self.algorithm}')
+
+        if self.deleteMe_alternateButtonColor:
+            self.encryptClicked()
+        else:
+            self.decryptClicked()
+
+###########################################################################
     def __init__(self, mainWindow):
         self.selectedFile : str
         self.pathToFile : str

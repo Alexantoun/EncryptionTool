@@ -71,14 +71,11 @@ class EncryptionControl:
             widgetStyler.disableButton(self.encryptButton)
 
 ###########################################################################
-    def onEncryptClicked(self, button):
-        print('Encrypt button clicked')
+    def onCipherButtonClick(self, button):
+        print('cipher button clicked')
         if self.selectedFile != None:
             print(f'\t{self.selectedFile} chosen for encryption')
-            self.encryptionManager.onEncryptClicked(self.selectedFile)
-        else:#I think this else clause is redundant because button is disabled if no file selected
-            print('No file for encryption was selected')
-            self.alertLabel.set_markup(const.ERROR_ENCRYPT_CLICKED_WITHOUT_FILE_SELECTED)
+            self.encryptionManager.onCipherButtonClick(self.selectedFile)        
 
 ###########################################################################
     def onContentSelectionChanged(self, treeViewSelection):
@@ -163,6 +160,7 @@ class EncryptionControl:
         self.prepareListView()
         self.window.set_default_size(680, 420)      
         self.openedDirectoryPath = ''
+        self.window.set_title('File Security')
         self.window.show_all()
 
 ###########################################################################
