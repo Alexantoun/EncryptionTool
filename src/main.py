@@ -89,9 +89,9 @@ class EncryptionControl:
 
             #Change button color based on if the file is encrypted or not
             if self.encryptionManager.checkSelectedFileEncryptionStatus(self.selectedFile):
-                widgetStyler.makeButtonGreen(self.encryptButton)            
-            else:
                 widgetStyler.makeButtonRed(self.encryptButton)
+            else:
+                widgetStyler.makeButtonGreen(self.encryptButton)            
 
         else:
             widgetStyler.disableButton(self.encryptButton)

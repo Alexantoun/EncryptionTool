@@ -15,3 +15,5 @@ def FOLDER_SELECTED(path:str) -> str:
 def ERROR_INPUT_NOT_FOUND(input:str) -> str: #Pretty sure this is redundant now
     string = '<span foreground="red" weight="Bold">No text was entered to search for</span>'
     return string
+
+ENCRYPTED_SUBSTRING = '.enc'

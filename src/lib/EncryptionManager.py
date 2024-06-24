@@ -1,4 +1,7 @@
 from . import FileCipher
+#raplce above line with imports of the specific encryption class definitions
+from . import Blowfish
+from . import Constants as const
 from enum import Enum
 import lib.EncryptionPrompt as EncryptionPrompt
 import lib.DecryptionPrompt as DecryptionPrompt
@@ -37,7 +40,7 @@ class Manager:
             key = prompt.get_entry()
             print(f'The key entered is: {key}')
             filePathStr = f'{self.pathToFile}/{self.selectedFile}'        
-            self.fileCipher.encrypt(filePathStr, key)
+            self.fileCipher.decrypt(filePathStr, key)
         else:
             print('\tAbort decryption')
 
@@ -56,23 +59,23 @@ class Manager:
             self.fileCipher = FileCipher.AES_CBC()
         elif(Algorithms_E.B_FISH == algorithm):
             debug = 'Blowfish'
-            self.fileCipher = FileCipher.Blowfish()
+            self.fileCipher = Blowfish.BLOWFISH
         
         print(f'Encryption algorithm {debug} selected.')
 
 ###########################################################################
     def checkSelectedFileEncryptionStatus(self, file : str) -> bool : 
         self.selectedFile = file
-        print(f'File encryptor focusing on {self.pathToFile}/{self.selectedFile}')
-        self.deleteMe_alternateButtonColor = not self.deleteMe_alternateButtonColor
-        return self.deleteMe_alternateButtonColor
+        self.fileIsEncrypted = (file[len(file) - 4 :] == const.ENCRYPTED_SUBSTRING)
+        print(f'File encryptor focusing on {self.pathToFile}/{self.selectedFile} : is encrypted = {self.fileIsEncrypted}')
+        return self.fileIsEncrypted 
 
 ###########################################################################
     def onCipherButtonClick(self, selectedFile : str):
         self.selectedFile = selectedFile        
         print(f'Will operate on file {self.pathToFile}/{self.selectedFile}, with algorithm {self.algorithm}')
 
-        if self.deleteMe_alternateButtonColor:
+        if not self.fileIsEncrypted:
             self.encryptClicked()
         else:
             self.decryptClicked()
@@ -83,5 +86,5 @@ class Manager:
         self.pathToFile : str
         self.algorithm : Algorithms_E
         self.fileCipher : FileCipher
-        self.deleteMe_alternateButtonColor = False
+        self.fileIsEncrypted : bool
         self.mainWindow = mainWindow
