@@ -19,6 +19,7 @@ class EncryptionControl:
         print('\tNeed to have the color of encrypt button be determined by whethor or not its an encrypted file')
         print('\tConstants.py needs renaming as there are methods in there to return a string')
         print('\tDirectoryInterface should get renamed to something else')
+        print('\tAdd Encryption key instructions into the Encryption prompt module')
         
 ###########################################################################
     def onToggle(self, button): #maybe loop through all three and use a dict to associate a button with an algorithm flag

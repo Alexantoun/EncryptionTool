@@ -1,30 +1,27 @@
 from . import FileCipher
-#raplce above line with imports of the specific encryption class definitions
-from . import Blowfish
 from . import Constants as const
 from enum import Enum
-import lib.EncryptionPrompt as EncryptionPrompt
-import lib.DecryptionPrompt as DecryptionPrompt
+import lib.KeyPrompts as KeyPrompts
 
 class Algorithms_E(Enum):
     RSA     = 0
     AES_CBC = 1
     B_FISH  = 2
 
-RESPONSE_TYPE_OK = EncryptionPrompt.gtk.ResponseType.OK
+RESPONSE_TYPE_OK = KeyPrompts.gtk.ResponseType.OK
 
 ###########################################################################
 class Manager:
     def encryptClicked(self):
         print(f'\tEncrypting {self.pathToFile}/{self.selectedFile}, with algorithm {self.algorithm}')
-        prompt = EncryptionPrompt.EncryptionPrompt(self.mainWindow)
+        prompt = KeyPrompts.EncryptionPrompt(self.mainWindow)
         
         response = prompt.run()
         if(response == RESPONSE_TYPE_OK):
             key = prompt.get_entry()
             print(f'The key entered is: {key}')
             filePathStr = f'{self.pathToFile}/{self.selectedFile}'        
-            self.fileCipher.encrypt(filePathStr, key)
+            self.fileCipher.Encrypt(filePathStr, key)
         else:
             print('\tAbort encryption')
 
@@ -33,14 +30,14 @@ class Manager:
 ###########################################################################        
     def decryptClicked(self):
         print(f'\tDecrypting {self.pathToFile}/{self.selectedFile}, with algorithm {self.algorithm}')
-        prompt = DecryptionPrompt.DecryptionPrompt(self.mainWindow)
+        prompt = KeyPrompts.DecryptionPrompt(self.mainWindow)
         
         response = prompt.run()
         if(response == RESPONSE_TYPE_OK):
             key = prompt.get_entry()
             print(f'The key entered is: {key}')
             filePathStr = f'{self.pathToFile}/{self.selectedFile}'        
-            self.fileCipher.decrypt(filePathStr, key)
+            self.fileCipher.Decrypt(filePathStr, key)
         else:
             print('\tAbort decryption')
 
@@ -59,7 +56,7 @@ class Manager:
             self.fileCipher = FileCipher.AES_CBC()
         elif(Algorithms_E.B_FISH == algorithm):
             debug = 'Blowfish'
-            self.fileCipher = Blowfish.BLOWFISH
+            self.fileCipher = FileCipher.BLOWFISH_CBC
         
         print(f'Encryption algorithm {debug} selected.')
 

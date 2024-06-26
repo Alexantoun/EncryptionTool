@@ -48,7 +48,7 @@ def disableButton(button):
     button.set_label('Encrypt')
     button.set_sensitive(False)
 
-# Gtk has a known issue where background-color doesnt work so need to use background-image instead
+# background-color doesnt work so need to use background-image instead
 # Active state will have slightly darker green color
 GREEN_BACKGROUND_WHITE_TEXT_STYLES = """
     .greenButtonWhiteText {
