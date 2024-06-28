@@ -1,34 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.2 -->
+<!-- Generated with glade 3.40.0 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
   <object class="GtkWindow" id="MainWindow">
-    <property name="can_focus">False</property>
+    <property name="can-focus">False</property>
     <signal name="destroy" handler="onWindowDestroy" swapped="no"/>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
     <child>
       <object class="GtkBox" id="Control_And_Tree_Separator">
         <property name="visible">True</property>
-        <property name="can_focus">False</property>
+        <property name="can-focus">False</property>
         <property name="orientation">vertical</property>
         <child>
           <object class="GtkBox" id="Button_And_Search_Separator">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            <property name="can-focus">False</property>
             <property name="orientation">vertical</property>
             <child>
               <object class="GtkBox" id="Search_And_Button_Separator">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can-focus">False</property>
                 <child>
                   <object class="GtkEntry" id="SearchEntry">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
+                    <property name="can-focus">True</property>
                     <property name="valign">end</property>
                     <property name="hexpand">True</property>
-                    <property name="placeholder_text" translatable="yes">Search for a specific file by name</property>
+                    <property name="placeholder-text" translatable="yes">Search for a specific file by name</property>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -40,34 +37,34 @@
                   <object class="GtkButton" id="OpenButton">
                     <property name="label">gtk-open</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
                     <property name="hexpand">False</property>
-                    <property name="use_stock">True</property>
-                    <property name="always_show_image">True</property>
+                    <property name="use-stock">True</property>
+                    <property name="always-show-image">True</property>
                     <signal name="clicked" handler="onOpenClicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="pack_type">end</property>
+                    <property name="pack-type">end</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkButton" id="FindButton">
-                    <property name="label">gtk-find</property>
+                  <object class="GtkButton" id="RefreshButton">
+                    <property name="label">gtk-refresh</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="use_stock">True</property>
-                    <property name="always_show_image">True</property>
-                    <signal name="clicked" handler="onFindClick" object="SearchEntry" swapped="no"/>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">True</property>
+                    <property name="use-stock">True</property>
+                    <property name="always-show-image">True</property>
+                    <signal name="clicked" handler="onRefreshClicked" swapped="no"/>
                   </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="pack_type">end</property>
+                    <property name="pack-type">end</property>
                     <property name="position">2</property>
                   </packing>
                 </child>
@@ -81,17 +78,17 @@
             <child>
               <object class="GtkBox" id="Encryption_Selection">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="can-focus">False</property>
                 <property name="homogeneous">True</property>
                 <child>
                   <object class="GtkRadioButton" id="Algo1">
                     <property name="label" translatable="yes">RSA</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">False</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">False</property>
                     <property name="halign">center</property>
                     <property name="active">True</property>
-                    <property name="draw_indicator">True</property>
+                    <property name="draw-indicator">True</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -100,14 +97,14 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkRadioButton" id="Algo2">
+                  <object class="GtkRadioButton" id="AESButton">
                     <property name="label" translatable="yes">AES-CBC</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">False</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">False</property>
                     <property name="halign">center</property>
                     <property name="active">True</property>
-                    <property name="draw_indicator">True</property>
+                    <property name="draw-indicator">True</property>
                     <property name="group">Algo1</property>
                     <signal name="toggled" handler="onToggle" swapped="no"/>
                   </object>
@@ -118,14 +115,14 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkRadioButton" id="Algo3">
+                  <object class="GtkRadioButton" id="BlowfishButton">
                     <property name="label" translatable="yes">Blowfish</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">False</property>
+                    <property name="can-focus">True</property>
+                    <property name="receives-default">False</property>
                     <property name="halign">center</property>
                     <property name="active">True</property>
-                    <property name="draw_indicator">True</property>
+                    <property name="draw-indicator">True</property>
                     <property name="group">Algo1</property>
                     <signal name="toggled" handler="onToggle" swapped="no"/>
                   </object>
@@ -152,13 +149,13 @@
         <child>
           <object class="GtkScrolledWindow">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="can-focus">True</property>
             <property name="vexpand">True</property>
-            <property name="shadow_type">in</property>
+            <property name="shadow-type">in</property>
             <child>
               <object class="GtkTreeView" id="FileView">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
+                <property name="can-focus">True</property>
                 <child internal-child="selection">
                   <object class="GtkTreeSelection"/>
                 </child>
@@ -174,12 +171,12 @@
         <child>
           <object class="GtkBox" id="Error_And_Apply_Separator">
             <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            <property name="can-focus">False</property>
             <child>
               <object class="GtkLabel" id="AlertLabel">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="margin_left">5</property>
+                <property name="can-focus">False</property>
+                <property name="margin-left">5</property>
                 <property name="hexpand">True</property>
                 <property name="xalign">0.019999999552965164</property>
               </object>
@@ -193,11 +190,11 @@
               <object class="GtkButton" id="EncryptButton">
                 <property name="label">button</property>
                 <property name="name">encryptButton</property>
-                <property name="width_request">95</property>
+                <property name="width-request">95</property>
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="receives_default">True</property>
-                <property name="always_show_image">True</property>
+                <property name="can-focus">False</property>
+                <property name="receives-default">True</property>
+                <property name="always-show-image">True</property>
                 <signal name="clicked" handler="onCipherButtonClick" swapped="no"/>
               </object>
               <packing>

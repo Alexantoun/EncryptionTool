@@ -53,7 +53,7 @@ class Manager:
             self.fileCipher = FileCipher.RSA()
         elif(Algorithms_E.AES_CBC == algorithm):
             debug = 'AES-CBC'
-            self.fileCipher = FileCipher.AES_CBC()
+            self.fileCipher = FileCipher.AES_CBC
         elif(Algorithms_E.B_FISH == algorithm):
             debug = 'Blowfish'
             self.fileCipher = FileCipher.BLOWFISH_CBC
@@ -63,7 +63,7 @@ class Manager:
 ###########################################################################
     def checkSelectedFileEncryptionStatus(self, file : str) -> bool : 
         self.selectedFile = file
-        self.fileIsEncrypted = (file[len(file) - 4 :] == const.ENCRYPTED_SUBSTRING)
+        self.fileIsEncrypted = (file[len(file) - 4 :] == const.ENCRYPTED_FILE_ENDING)
         print(f'File encryptor focusing on {self.pathToFile}/{self.selectedFile} : is encrypted = {self.fileIsEncrypted}')
         return self.fileIsEncrypted 
 

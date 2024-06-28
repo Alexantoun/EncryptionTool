@@ -1,5 +1,6 @@
 
 from .EncryptionMethods import Blowfish
+from .EncryptionMethods import AES
 
 class FileCipher:
     def __init__(self):
@@ -18,8 +19,11 @@ class RSA(FileCipher):
 
 ###########################################################################
 class AES_CBC(FileCipher):
-    def encrypt(pathToFile : str, key : str):
-        print(f'Need to implement AES_CBC.\n\tpathToFile = {pathToFile}.\n\tKey = {key}')
+    def Encrypt(pathToFile : str, key : str):
+        AES.Encrypt(pathToFile, key)
+    
+    def Decrypt(pathToFile : str, key : str):
+        AES.Decrypt(pathToFile, key)
 
 ###########################################################################
 class BLOWFISH_CBC(FileCipher):

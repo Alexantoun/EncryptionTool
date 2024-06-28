@@ -1,13 +1,13 @@
+from .. import Constants as const
 from Crypto.Cipher import Blowfish
 from Crypto.Random import get_random_bytes
 from Crypto.Util.Padding import pad, unpad
-from .. import Constants as const
 
 BLOCK_SIZE = Blowfish.block_size
 
 ###########################################################################
 def Encrypt(pathToFile : str, key : str):
-    outputFile = pathToFile + const.ENCRYPTED_SUBSTRING
+    outputFile = pathToFile + const.ENCRYPTED_FILE_ENDING
     key = key.encode('utf-8')
     print(f'Blowfish - Encrypting: \n\tpathToFile = {pathToFile}\n\tKey = {key}\n\tOutput file will be: {outputFile}')
     
@@ -25,8 +25,8 @@ def Encrypt(pathToFile : str, key : str):
 
 ###########################################################################
 def Decrypt(pathToFile : str, key : str):
-    subStringCount = -len(const.ENCRYPTED_SUBSTRING)
-    outputFile = pathToFile[:subStringCount]
+    substringCount = -len(const.ENCRYPTED_FILE_ENDING)
+    outputFile = pathToFile[:substringCount]
     print(f'Blowfish - Decrypting : \n\tpathToFile = {pathToFile}\n\tKey = {key}\n\tOutput file will be: {outputFile}')
 
     key = key.encode('utf-8')

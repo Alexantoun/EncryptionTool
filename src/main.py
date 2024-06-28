@@ -16,10 +16,10 @@ class EncryptionControl:
         print('Closing application')
         gtk.main_quit()
         print('Tasks still required: ')
-        print('\tNeed to have the color of encrypt button be determined by whethor or not its an encrypted file')
         print('\tConstants.py needs renaming as there are methods in there to return a string')
         print('\tDirectoryInterface should get renamed to something else')
         print('\tAdd Encryption key instructions into the Encryption prompt module')
+        print('\t\'Find\' button is redundant, replace it with \'Refresh\' functionality')
         
 ###########################################################################
     def onToggle(self, button): #maybe loop through all three and use a dict to associate a button with an algorithm flag
@@ -42,31 +42,32 @@ class EncryptionControl:
         response = navBox.run()
 
         if response == gtk.ResponseType.OK:
-            path = navBox.get_current_folder()
-            print(f'\tFolder selected: {path}')
-
+            self.SelectedFolder = navBox.get_current_folder()
+            print(f'\tFolder selected: {self.SelectedFolder}')
             self.unfilteredStore.clear()
             self.selectedFile = None
-            self.encryptionManager.pathToFile = path
-            self.alertLabel.set_markup(const.FOLDER_SELECTED(path))
-            self.populateListView(path)            
+            self.encryptionManager.pathToFile = self.SelectedFolder
+            self.alertLabel.set_markup(const.FOLDER_SELECTED(self.SelectedFolder)) #use set markup to change css of the element
+            self.populateListView(self.SelectedFolder)            
 
         elif response == gtk.ResponseType.CANCEL:
             print(f'\tFolder navigation cancelled')
 
         navBox.hide()
 
+    def onRefreshClicked(self, button):
+        self.unfilteredStore.clear()
+        self.filterSearch.set_text('')
+        self.populateListView(self.SelectedFolder)             
+
 ###########################################################################
-    def onFindClick(self, button):
-        print('Find button clicked')
+    def FilterDirectoryContents(self, button):
         searchStr = self.filterSearch.get_text()
         if searchStr != '':
             print(f'\t{searchStr} Was entered')             
             self.filterTreeViewByInput(searchStr)
             self.alertLabel.set_text('Displaying contents that match \''+searchStr+ '\' in name')
         else:
-            print('\tfind button clicked with no input, removing filters')
-            self.alertLabel.set_markup(const.ERROR_NO_INPUT_IN_SEARCH_BAR)
             self.contentsView.set_model(self.unfilteredStore)
             self.selectedFile = None
             widgetStyler.disableButton(self.encryptButton)
@@ -108,7 +109,7 @@ class EncryptionControl:
         self.contentsView.append_column(gtk.TreeViewColumn('Last Modified', gtk.CellRendererText(), text=const.MODIFIED_INDEX))
         #Setting UI behavior of columns
         nameColumn = self.contentsView.get_column(const.NAME_INDEX)
-        nameColumn.set_sort_column_id(const.NAME_INDEX)
+        nameColumn.set_sort_column_id(const.NAME_INDEX) #This allows sorting when clicking on 'name' column
         nameColumn.set_min_width(200)        
         nameColumn.set_expand(True)
 
@@ -155,6 +156,7 @@ class EncryptionControl:
         builder.add_from_file('./forms/MainWindow.glade')
         builder.connect_signals(self)
         self.getObjects(builder)        
+        self.SelectedFolder : str
         self.encryptionManager = encryptionManager.Manager(self.window)
         self.encryptButton.set_label('Encrypt')
         self.onToggle(None)
@@ -168,8 +170,8 @@ class EncryptionControl:
     def getObjects(self, builder):
         self.window = builder.get_object('MainWindow')
         self.RSAButton = builder.get_object('Algo1')
-        self.AESButton = builder.get_object('Algo2')
-        self.BlowfishButton = builder.get_object('Algo3')
+        self.AESButton = builder.get_object('AESButton')
+        self.BlowfishButton = builder.get_object('BlowfishButton')
         self.openButton = builder.get_object('OpenButton')
         self.findButton = builder.get_object('FindButton')
         self.alertLabel = builder.get_object('AlertLabel')
@@ -180,7 +182,9 @@ class EncryptionControl:
         self.encryptButton.set_sensitive(False)
         
         enterKeyPressedInSearchBar = "activate"
-        self.filterSearch.connect(enterKeyPressedInSearchBar, self.onFindClick)
+        self.filterSearch.connect(enterKeyPressedInSearchBar, self.FilterDirectoryContents)
+        self.filterSearch.connect("changed", self.FilterDirectoryContents)
+
 
 if __name__ == '__main__':
     print('Running encryptor application')
