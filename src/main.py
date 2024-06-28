@@ -70,7 +70,6 @@ class EncryptionControl:
         else:
             self.contentsView.set_model(self.unfilteredStore)
             self.selectedFile = None
-            widgetStyler.disableButton(self.encryptButton)
 
 ###########################################################################
     def onCipherButtonClick(self, button):
