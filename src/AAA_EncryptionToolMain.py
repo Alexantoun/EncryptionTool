@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import os
+import sys
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk as gtk
@@ -11,7 +12,7 @@ import lib.EncryptionManager as encryptionManager
 from lib.EncryptionManager import Algorithms_E as encryptionAlgorithms
 
 ###########################################################################    
-class EncryptionControl:
+class EncryptionTool:
     def onWindowDestroy(self, widget):
         print('Closing application')
         gtk.main_quit()
@@ -19,13 +20,10 @@ class EncryptionControl:
         print('\tConstants.py needs renaming as there are methods in there to return a string')
         print('\tDirectoryInterface should get renamed to something else')
         print('\tAdd Encryption key instructions into the Encryption prompt module')
-        print('\t\'Find\' button is redundant, replace it with \'Refresh\' functionality')
         
 ###########################################################################
     def onToggle(self, button): #maybe loop through all three and use a dict to associate a button with an algorithm flag
-        if self.RSAButton.get_active():
-            self.encryptionManager.setAlgorithm(encryptionAlgorithms.RSA)
-        elif self.AESButton.get_active():
+        if self.AESButton.get_active():
             self.encryptionManager.setAlgorithm(encryptionAlgorithms.AES_CBC)
         elif self.BlowfishButton.get_active():
             self.encryptionManager.setAlgorithm(encryptionAlgorithms.B_FISH)
@@ -152,7 +150,7 @@ class EncryptionControl:
 ###########################################################################
     def __init__(self): 
         builder = gtk.Builder()
-        builder.add_from_file('./forms/MainWindow.glade')
+        builder.add_from_file('./src/forms/MainWindow.glade')
         builder.connect_signals(self)
         self.getObjects(builder)        
         self.SelectedFolder : str
@@ -162,13 +160,12 @@ class EncryptionControl:
         self.prepareListView()
         self.window.set_default_size(680, 420)      
         self.openedDirectoryPath = ''
-        self.window.set_title('File Security')
+        self.window.set_title('AAA_EncryptionTool')
         self.window.show_all()
 
 ###########################################################################
     def getObjects(self, builder):
-        self.window = builder.get_object('MainWindow')
-        self.RSAButton = builder.get_object('Algo1')
+        self.window = builder.get_object('MainWindow')        
         self.AESButton = builder.get_object('AESButton')
         self.BlowfishButton = builder.get_object('BlowfishButton')
         self.openButton = builder.get_object('OpenButton')
@@ -185,7 +182,7 @@ class EncryptionControl:
         self.filterSearch.connect("changed", self.FilterDirectoryContents)
 
 
-if __name__ == '__main__':
-    print('Running encryptor application')
-    main = EncryptionControl()
-    gtk.main()
+# if __name__ == '__main__':
+#     print('Running encryptor application')
+#     main = EncryptionTool()
+#     gtk.main()
