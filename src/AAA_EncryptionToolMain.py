@@ -16,10 +16,6 @@ class EncryptionTool:
     def onWindowDestroy(self, widget):
         print('Closing application')
         gtk.main_quit()
-        print('Tasks still required: ')
-        print('\tConstants.py needs renaming as there are methods in there to return a string')
-        print('\tDirectoryInterface should get renamed to something else')
-        print('\tAdd Encryption key instructions into the Encryption prompt module')
         
 ###########################################################################
     def onToggle(self, button): #maybe loop through all three and use a dict to associate a button with an algorithm flag
@@ -45,7 +41,7 @@ class EncryptionTool:
             self.unfilteredStore.clear()
             self.selectedFile = None
             self.encryptionManager.pathToFile = self.SelectedFolder
-            self.alertLabel.set_markup(const.FOLDER_SELECTED(self.SelectedFolder)) #use set markup to change css of the element
+            self.alertLabel.set_text('Displaying content in ' + self.SelectedFolder)
             self.populateListView(self.SelectedFolder)            
 
         elif response == gtk.ResponseType.CANCEL:
@@ -180,9 +176,3 @@ class EncryptionTool:
         enterKeyPressedInSearchBar = "activate"
         self.filterSearch.connect(enterKeyPressedInSearchBar, self.FilterDirectoryContents)
         self.filterSearch.connect("changed", self.FilterDirectoryContents)
-
-
-# if __name__ == '__main__':
-#     print('Running encryptor application')
-#     main = EncryptionTool()
-#     gtk.main()

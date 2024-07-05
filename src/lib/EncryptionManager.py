@@ -4,9 +4,8 @@ from enum import Enum
 import lib.KeyPrompts as KeyPrompts
 
 class Algorithms_E(Enum):
-    RSA     = 0
-    AES_CBC = 1
-    B_FISH  = 2
+    AES_CBC = 0
+    B_FISH  = 1
 
 RESPONSE_TYPE_OK = KeyPrompts.gtk.ResponseType.OK
 
@@ -48,10 +47,7 @@ class Manager:
         self.algorithm = algorithm
         debug : str
 
-        if(Algorithms_E.RSA == algorithm):
-            debug = 'RSA'
-            self.fileCipher = FileCipher.RSA()
-        elif(Algorithms_E.AES_CBC == algorithm):
+        if(Algorithms_E.AES_CBC == algorithm):
             debug = 'AES-CBC'
             self.fileCipher = FileCipher.AES_CBC
         elif(Algorithms_E.B_FISH == algorithm):
