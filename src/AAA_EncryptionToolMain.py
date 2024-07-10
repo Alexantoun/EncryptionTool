@@ -20,8 +20,8 @@ class EncryptionTool:
 ###########################################################################
     def onToggle(self, button): #maybe loop through all three and use a dict to associate a button with an algorithm flag
         if self.AESButton.get_active():
-            self.encryptionManager.setAlgorithm(encryptionAlgorithms.AES_CBC)
-        elif self.BlowfishButton.get_active():
+            self.encryptionManager.setAlgorithm(encryptionAlgorithms.AES_CBC)            
+        elif self.blowfishButton.get_active():
             self.encryptionManager.setAlgorithm(encryptionAlgorithms.B_FISH)
         else:
             print('Error selecting algorithm')        
@@ -49,6 +49,7 @@ class EncryptionTool:
 
         navBox.hide()
 
+###########################################################################
     def onRefreshClicked(self, button):
         self.unfilteredStore.clear()
         self.filterSearch.set_text('')
@@ -163,7 +164,7 @@ class EncryptionTool:
     def getObjects(self, builder):
         self.window = builder.get_object('MainWindow')        
         self.AESButton = builder.get_object('AESButton')
-        self.BlowfishButton = builder.get_object('BlowfishButton')
+        self.blowfishButton = builder.get_object('BlowfishButton')
         self.openButton = builder.get_object('OpenButton')
         self.findButton = builder.get_object('FindButton')
         self.alertLabel = builder.get_object('AlertLabel')
