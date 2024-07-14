@@ -19,12 +19,6 @@ def MockGTK(mocker):
     return mocker
 
 @pytest.fixture
-def MockEncryptionManager(mocker):
-    mock_manager = mocker.Mock()
-    mocker.patch('src.lib.EncryptionManager.Manager', return_value=mock_manager)
-    return mock_manager
-
-@pytest.fixture
 def MockConstants(mocker):
     mocker.patch('src.lib.Constants.NAME_INDEX', 0)
     mocker.patch('src.lib.Constants.SIZE_INDEX', 1)
@@ -32,7 +26,7 @@ def MockConstants(mocker):
     return mocker
 
 @pytest.fixture
-def EncryptionTool(MockGTK, MockEncryptionManager, MockConstants):
+def EncryptionTool(MockGTK, MockConstants):
     from src.AAA_EncryptionToolMain import EncryptionTool
     return EncryptionTool()
 
@@ -76,6 +70,7 @@ def test_GivenEncryptedFiledSelectedThenEncryptButtonShouldBeRestyledRedAndSensi
         EncryptionTool.onContentSelectionChanged(treeSelectionMock)
         makeButtonRedMock.assert_called_once()
 
+###########################################################################
 def test_GivenPlainTextFileSelectedThenEncryptButtonShouldBeRestyledGreenAndSensitive(EncryptionTool):
     treeSelectionMock = MagicMock()
     treeModelMock = MagicMock()
@@ -89,6 +84,7 @@ def test_GivenPlainTextFileSelectedThenEncryptButtonShouldBeRestyledGreenAndSens
         EncryptionTool.onContentSelectionChanged(treeSelectionMock)
         makeButtonGreenMock.assert_called_once()
 
+###########################################################################
 def test_GivenNoFileSelectedThenEncryptButtonShouldBeInsensitive(EncryptionTool):
     treeSelectionMock = MagicMock()
     treeSelectionMock.get_selected.return_value = (None, None)
@@ -96,3 +92,36 @@ def test_GivenNoFileSelectedThenEncryptButtonShouldBeInsensitive(EncryptionTool)
     with patch('lib.Restyle.disableButton') as disableButtonMock:
         EncryptionTool.onContentSelectionChanged(treeSelectionMock)
         disableButtonMock.assert_called_once()
+
+###########################################################################
+def test_OnFolderSelectedThenPopulateListViewIsCalledAndEncryptionManagerUpdated(EncryptionTool):    
+    expectedPath = '/arbitrary/path'
+    EncryptionTool.populateListView = MagicMock()
+
+    #Dont need to patch FileChooserDialog because its handled in MockGTK()
+    fileChooserDialogMock = gtk.FileChooserDialog.return_value
+    fileChooserDialogMock.run.return_value = gtk.ResponseType.OK
+    fileChooserDialogMock.get_current_folder.return_value = expectedPath
+
+    EncryptionTool.onOpenClicked(None)
+    EncryptionTool.populateListView.assert_called_once_with(expectedPath)
+    assert EncryptionTool.encryptionManager.pathToFile == expectedPath
+
+###########################################################################
+def test_OnRefreshClickedThenInvokePopulateListView(EncryptionTool):    
+    EncryptionTool.unfilteredStore.clear = MagicMock()
+    EncryptionTool.filterSearch.set_text = MagicMock()
+    EncryptionTool.populateListView = MagicMock()
+    EncryptionTool.SelectedFolder = MagicMock()
+
+    EncryptionTool.onRefreshClicked(None)
+    EncryptionTool.unfilteredStore.clear.assert_called_once()
+    EncryptionTool.filterSearch.set_text.assert_called_once_with('')
+    EncryptionTool.populateListView.assert_called_once()
+
+def test_OnCipherButtonClickedThenEncryptionManagerReceivesCorrectFile(EncryptionTool):
+    EncryptionTool.selectedFile = 'ArbitraryFile'
+    EncryptionTool.encryptionManager.onCipherButtonClick = MagicMock()
+
+    EncryptionTool.onCipherButtonClick(None)
+    EncryptionTool.encryptionManager.onCipherButtonClick.assert_called_once_with(EncryptionTool.selectedFile)

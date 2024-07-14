@@ -21,4 +21,4 @@ def GetDirectoryContents(path):
             print(f'\t{file}\t{size}\t{lastMod}')
         else:
             print(f'{file} is not a file, omitting from view')
-    return zip(fileName, fileSize, modified)    
+    return zip(fileName, fileSize, modified)
