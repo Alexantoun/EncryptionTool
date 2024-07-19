@@ -1,32 +1,17 @@
-#!/usr/bin/env python3
-
 import pytest
 from unittest.mock import MagicMock, patch
-from src.AAA_EncryptionToolMain import EncryptionTool  # Adjust this import as necessary
-import src.lib.Constants as const
+from src.AAA_EncryptionToolMain import EncryptionTool
 from gi.repository import Gtk as gtk
 
 @pytest.fixture
 def MockGTK(mocker):
     gi_repo = 'gi.repository.Gtk.'
     mocker.patch(gi_repo+'FileChooserDialog')
-    mocker.patch(gi_repo+'TreeView')
-    mocker.patch(gi_repo+'ListStore')
-    mocker.patch(gi_repo+'CellRendererText')
-    mocker.patch(gi_repo+'TreeViewColumn')
-    mocker.patch(gi_repo+'Window')
     mocker.patch(gi_repo+'Builder')
     return mocker
 
 @pytest.fixture
-def MockConstants(mocker):
-    mocker.patch('src.lib.Constants.NAME_INDEX', 0)
-    mocker.patch('src.lib.Constants.SIZE_INDEX', 1)
-    mocker.patch('src.lib.Constants.MODIFIED_INDEX', 2)
-    return mocker
-
-@pytest.fixture
-def EncryptionTool(MockGTK, MockConstants):
+def EncryptionTool(MockGTK):
     from src.AAA_EncryptionToolMain import EncryptionTool
     return EncryptionTool()
 
@@ -124,4 +109,4 @@ def test_OnCipherButtonClickedThenEncryptionManagerReceivesCorrectFile(Encryptio
     EncryptionTool.encryptionManager.onCipherButtonClick = MagicMock()
 
     EncryptionTool.onCipherButtonClick(None)
-    EncryptionTool.encryptionManager.onCipherButtonClick.assert_called_once_with(EncryptionTool.selectedFile)
+    EncryptionTool.encryptionManager.onCipherButtonClick.assert_called_once_with('ArbitraryFile')

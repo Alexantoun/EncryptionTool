@@ -13,12 +13,12 @@ def GetDirectoryContents(path):
         fullPath = os.path.join(path, file)
         if os.path.isfile(fullPath):
             size = float("{:.2f}".format(int(os.path.getsize(fullPath)) / 1000))
-            lastMod = os.path.getmtime(fullPath)
-            lastMod = datetime.fromtimestamp(lastMod).strftime('%H:%M:%S %m-%d-%Y')
+            lastModified = os.path.getmtime(fullPath)
+            lastModified = datetime.fromtimestamp(lastModified).strftime('%H:%M:%S %m-%d-%Y')
             fileName.append(file)
             fileSize.append(size)
-            modified.append(lastMod)
-            print(f'\t{file}\t{size}\t{lastMod}')
+            modified.append(lastModified)
+            print(f'\t{file}\t{size}\t{lastModified}')
         else:
             print(f'{file} is not a file, omitting from view')
     return zip(fileName, fileSize, modified)
