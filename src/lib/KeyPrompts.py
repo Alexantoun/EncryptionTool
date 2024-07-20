@@ -18,6 +18,7 @@ class EncryptionPrompt(gtk.Dialog):
         self.secondEntry.connect("activate", self.EnterKeyPressed)
         self.secondEntry.set_visibility(False)
         self.secondEntry.set_placeholder_text("Repeat Password")
+        self.entriesMatch = False
         
         #To style the dialog window, need to create a vBox with 3 sections, section 1 for password box 1, section 2 for password box 2
         #and section 3 that has a hBox to hold the cancel and ok buttons
@@ -33,13 +34,14 @@ class EncryptionPrompt(gtk.Dialog):
 
 ###########################################################################
     def EnterKeyPressed(self, button):
-        self.response(gtk.ResponseType.OK)
+        if(self.entriesMatch):
+            self.response(gtk.ResponseType.OK)
         
 ###########################################################################
     #Whenever a key is pressed inside the 2nd entry line, check if both strings match
     def OnTextEntryChanged(self, entry):
-        self.OKButton.set_sensitive(len(entry.get_text()) > 0 and 
-                                    self.firstEntry.get_text() == self.secondEntry.get_text())        
+        self.entriesMatch = len(entry.get_text()) > 0 and self.firstEntry.get_text() == self.secondEntry.get_text()
+        self.OKButton.set_sensitive(self.entriesMatch)              
 
 ###########################################################################
     def get_entry(self) -> str:
