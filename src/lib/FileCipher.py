@@ -10,12 +10,7 @@ class FileCipher:
         pass
     
     def Decrypt(pathToFile : str , key : str):
-        print("BUILD THE DECRYPTION")
-
-###########################################################################
-class RSA(FileCipher):
-    def encrypt(pathToFile : str, key : str):
-        print(f'Need to implement RSA.\n\tpathToFile = {pathToFile}.\n\tKey = {key}')
+        pass
 
 ###########################################################################
 class AES_CBC(FileCipher):

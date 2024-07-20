@@ -104,6 +104,7 @@ def test_OnRefreshClickedThenInvokePopulateListView(EncryptionTool):
     EncryptionTool.filterSearch.set_text.assert_called_once_with('')
     EncryptionTool.populateListView.assert_called_once()
 
+###########################################################################
 def test_OnCipherButtonClickedThenEncryptionManagerReceivesCorrectFile(EncryptionTool):
     EncryptionTool.selectedFile = 'ArbitraryFile'
     EncryptionTool.encryptionManager.onCipherButtonClick = MagicMock()
