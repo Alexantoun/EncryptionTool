@@ -68,7 +68,8 @@ class DecryptionPrompt(gtk.Dialog):
 
 ###########################################################################
     def OnEnterKeyPressed(self, button):
-        self.response(gtk.ResponseType.OK)
+        if len(self.entry.get_text()) > 0:
+            self.response(gtk.ResponseType.OK)
 
 ###########################################################################    
     def OnTextEntryChanged(self, entry):
