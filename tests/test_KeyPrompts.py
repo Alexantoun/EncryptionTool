@@ -119,6 +119,7 @@ def DPrompt():
     prompt = DecryptionPrompt(None)
     return prompt
 
+#<<<<<<<<<<<<<<<<<<<< Begin Tests >>>>>>>>>>>>>>>>>>>>
 def test_OnDecryptionPromptCreationExpectCorrectSettingsOnWidgets():
     with patch(gi_repo + 'Entry') as gtk_entry_MOCK, \
          patch(gi_repo + 'Dialog.get_content_area'):
@@ -143,6 +144,7 @@ def test_OnDecryptionPromptCreationExpectCorrectSettingsOnWidgets():
         
         assert prompt.OKButton.get_sensitive() == False
 
+###########################################################################
 def test_OnTextEntryChangedExpectOKButtonToBetSensitiveWhenTextEntryGreaterThanZero(DPrompt):    
     assert DPrompt.OKButton.get_sensitive() == False
     
@@ -158,6 +160,7 @@ def test_OnTextEntryChangedExpectOKButtonToBetSensitiveWhenTextEntryGreaterThanZ
     DPrompt.OnTextEntryChanged(entry)
     assert DPrompt.OKButton.get_sensitive() == True
 
+###########################################################################
 def test_DecryptionPromptGetEntryMethodReturnsWhateverIsInTheInputField(DPrompt):
     with patch.object(DPrompt.entry, 'get_text', return_value='ArbitraryPassword'):
         assert DPrompt.get_entry() == 'ArbitraryPassword'
@@ -165,6 +168,7 @@ def test_DecryptionPromptGetEntryMethodReturnsWhateverIsInTheInputField(DPrompt)
     with patch.object(DPrompt.entry, 'get_text', return_value='AnotherPassword'):
         assert DPrompt.get_entry() == 'AnotherPassword'
 
+###########################################################################
 def test_OnEnterKeyPressedAndEntryHasInputExpectResponseTypeOK(DPrompt):
     PasswordEntries = ['', 'ArbitraryPassword']
     with patch.object(DPrompt.entry, 'get_text', side_effect=PasswordEntries), \
@@ -177,3 +181,5 @@ def test_OnEnterKeyPressedAndEntryHasInputExpectResponseTypeOK(DPrompt):
         DPrompt.OnEnterKeyPressed(DPrompt.entry)
         assert DPrompt.entry.get_text.call_count == 2
         response_MOCK.assert_called_once_with(gtk.ResponseType.OK)
+
+#<<<<<<<<<<<<<<<<<<<< End Decryption Prompt >>>>>>>>>>>>>>>>>>>>
