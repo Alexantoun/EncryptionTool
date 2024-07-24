@@ -27,7 +27,7 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install flake8 pytest
-        pip install pygobject
+        sudo apt-get install -y libgirepository1.0-dev libgtk-3-dev
         pip install python-dotenv
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Set PYTHONPATH
