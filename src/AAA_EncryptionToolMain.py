@@ -11,6 +11,16 @@ import lib.Restyle as widgetStyler
 import lib.EncryptionManager as encryptionManager
 from lib.EncryptionManager import Algorithms_E as encryptionAlgorithms
 
+def form_path(relativePath : str):
+    """Get the absolute path for the glade form that works for dev & PyInstaller"""
+    try:
+        basePath = sys._MEIPASS +'/' + relativePath
+        print('Form path for executable')
+    except Exception:
+        basePath = './src/' + relativePath
+        print('Form path for eevelopment')
+    return (basePath)
+
 ###########################################################################    
 class EncryptionTool:
     def onWindowDestroy(self, widget):
@@ -146,8 +156,8 @@ class EncryptionTool:
     
 ###########################################################################
     def __init__(self): 
-        builder = gtk.Builder()
-        builder.add_from_file('./src/forms/MainWindow.glade')
+        builder = gtk.Builder()        
+        builder.add_from_file(form_path('forms/MainWindow.glade'))
         builder.connect_signals(self)
         self.getObjects(builder)        
         self.SelectedFolder : str

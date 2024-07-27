@@ -1,15 +1,16 @@
-#!/usr/bin/env python3
-import os, sys
-
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'src')))
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), 'lib')))
-
-import src.AAA_EncryptionToolMain
+import sys
+import os
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk as gtk
 
-if __name__ == '__main__':
-    print('Running AAA_EncryptionTool application')
-    main = src.AAA_EncryptionToolMain.EncryptionTool()
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), 'src'))
+
+from src.AAA_EncryptionToolMain import EncryptionTool
+
+def main():
+    EncryptionTool()
     gtk.main()
+
+if __name__ == "__main__":
+    main()

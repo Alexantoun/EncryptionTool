@@ -1,5 +1,6 @@
-src/lib/__pycache__/*
-src/lib/__pycache__/Constants.cpython-38.pyc
-src/lib/__pycache__/EncryptionManager.cpython-38.pyc
-src/lib/__pycache__/FileCipher.cpython-38.pyc
-src/lib/__pycache__/Restyle.cpython-38.pyc
+*.pyc
+
+org*
+com*
+build/*
+*.spec
