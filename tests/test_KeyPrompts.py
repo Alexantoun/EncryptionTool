@@ -28,7 +28,7 @@ def test_OnEncryptionPromptCreationExpectCorrectSettingsOnWidgets():
         secondEntryMock.set_visibility = MagicMock()
         secondEntryMock.set_placeholder_text = MagicMock()
 
-        #every time gtk.Entry is made, it will return an element of the list in the lists order
+        #every time gtk.Entry is made, it will instead return an element of the list in order
         gtk_entry_MOCK.side_effect = [firstEntryMock, secondEntryMock]
     
         prompt = EncryptionPrompt(None)
