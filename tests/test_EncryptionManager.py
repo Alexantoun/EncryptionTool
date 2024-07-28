@@ -22,6 +22,7 @@ def EncryptionManager(MockPrompts):
     from lib.EncryptionManager import Manager as mgr
     return mgr(None)
 
+#<<<<<<<<<<<<<<<<<<<< Begin Test >>>>>>>>>>>>>>>>>>>>
 def test_OnEncryptClickedAndValidKeysEnteredExpectCipherToEncryptChosenFile(EncryptionManager):
     promptMock = lib.KeyPrompts.EncryptionPrompt.return_value
     promptMock.get_entry.return_value = TEST_KEY
@@ -37,6 +38,7 @@ def test_OnEncryptClickedAndValidKeysEnteredExpectCipherToEncryptChosenFile(Encr
     EncryptionManager.fileCipher.Encrypt.assert_called_once_with(f'{TEST_FILE_PATH}/{TEST_FILE}', TEST_KEY)
     promptMock.destroy.assert_called_once()
 
+###########################################################################
 def test_OnDecryptClickedAndKeyEnteredExpectCipherToDecryptChosenFile(EncryptionManager):
     promptMock = lib.KeyPrompts.DecryptionPrompt.return_value
     promptMock.get_entry.return_value = TEST_KEY
@@ -52,6 +54,7 @@ def test_OnDecryptClickedAndKeyEnteredExpectCipherToDecryptChosenFile(Encryption
     EncryptionManager.fileCipher.Decrypt.assert_called_once_with(f'{TEST_FILE_PATH}/{TEST_FILE}', TEST_KEY)
     promptMock.destroy.assert_called_once()
 
+###########################################################################
 def test_OnAlgorithmSelectedExpectFileCipherToBeAssignedCorrectly(EncryptionManager):
     EncryptionManager.setAlgorithm(DEFAULT_ALGORITHM)
     assert lib.FileCipher.AES_CBC == EncryptionManager.fileCipher
@@ -59,6 +62,7 @@ def test_OnAlgorithmSelectedExpectFileCipherToBeAssignedCorrectly(EncryptionMana
     EncryptionManager.setAlgorithm(lib.EncryptionManager.Algorithms_E.B_FISH)
     assert lib.FileCipher.BLOWFISH_CBC == EncryptionManager.fileCipher
 
+###########################################################################
 def test_OnCipherButtonClickHandlerThatsCalledBasedOnFileEncryptedStatus(EncryptionManager):    
     with patch.object(EncryptionManager, 'encryptClicked') as encryptClickedMock, \
          patch.object(EncryptionManager, 'decryptClicked') as decryptClickedMock:
@@ -76,6 +80,7 @@ def test_OnCipherButtonClickHandlerThatsCalledBasedOnFileEncryptedStatus(Encrypt
         encryptClickedMock.assert_not_called()
         decryptClickedMock.assert_called_once()
 
+###########################################################################
 def test_CheckFileEncryptionStatusReturnsCorrectEncryptedStatusAndUpdatesSelectedFile(EncryptionManager):    
     EncryptionManager.pathToFile = TEST_FILE_PATH
     
@@ -85,6 +90,3 @@ def test_CheckFileEncryptionStatusReturnsCorrectEncryptedStatusAndUpdatesSelecte
     assert True == EncryptionManager.checkSelectedFileEncryptionStatus(TEST_FILE + '.enc')
     assert TEST_FILE + '.enc' == EncryptionManager.selectedFile
     
-
-
-
