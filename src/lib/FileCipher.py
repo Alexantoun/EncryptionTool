@@ -14,16 +14,20 @@ class FileCipher:
 
 ###########################################################################
 class AES_CBC(FileCipher):
+    @staticmethod
     def Encrypt(pathToFile : str, key : str):
         AES.Encrypt(pathToFile, key)
     
+    @staticmethod
     def Decrypt(pathToFile : str, key : str):
         AES.Decrypt(pathToFile, key)
 
 ###########################################################################
 class BLOWFISH_CBC(FileCipher):
+    @staticmethod
     def Encrypt(pathToFile: str, key: str):
         Blowfish.Encrypt(pathToFile, key)
     
+    @staticmethod
     def Decrypt(pathToFile : str, key : str):
         Blowfish.Decrypt(pathToFile, key)

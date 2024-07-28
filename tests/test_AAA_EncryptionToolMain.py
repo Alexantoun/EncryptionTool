@@ -1,6 +1,5 @@
 import pytest
 from unittest.mock import MagicMock, patch
-from src.AAA_EncryptionToolMain import EncryptionTool
 from gi.repository import Gtk as gtk
 
 @pytest.fixture
