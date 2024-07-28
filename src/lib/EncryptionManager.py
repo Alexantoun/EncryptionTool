@@ -18,7 +18,6 @@ class Manager:
         response = prompt.run()
         if(response == RESPONSE_TYPE_OK):
             key = prompt.get_entry()
-            print(f'The key entered is: {key}')
             filePathStr = f'{self.pathToFile}/{self.selectedFile}'        
             self.fileCipher.Encrypt(filePathStr, key)
         else:
@@ -34,7 +33,6 @@ class Manager:
         response = prompt.run()
         if(response == RESPONSE_TYPE_OK):
             key = prompt.get_entry()
-            print(f'The key entered is: {key}')
             filePathStr = f'{self.pathToFile}/{self.selectedFile}'        
             self.fileCipher.Decrypt(filePathStr, key)
         else:
@@ -60,14 +58,11 @@ class Manager:
     def checkSelectedFileEncryptionStatus(self, file : str) -> bool : 
         self.selectedFile = file
         self.fileIsEncrypted = (file[len(file) - 4 :] == const.ENCRYPTED_FILE_ENDING)
-        print(f'File encryptor focusing on {self.pathToFile}/{self.selectedFile} : is encrypted = {self.fileIsEncrypted}')
+        print(f'Encrypted status of: {self.pathToFile}/{self.selectedFile} = {self.fileIsEncrypted}')
         return self.fileIsEncrypted 
 
 ###########################################################################
-    def onCipherButtonClick(self, selectedFile : str):
-        self.selectedFile = selectedFile        
-        print(f'Will operate on file {self.pathToFile}/{self.selectedFile}, with algorithm {self.algorithm}')
-
+    def onCipherButtonClick(self):
         if not self.fileIsEncrypted:
             self.encryptClicked()
         else:

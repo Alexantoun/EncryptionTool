@@ -1,5 +1,7 @@
 import pytest
 from unittest.mock import MagicMock, patch
+import gi
+gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk as gtk
 
 @pytest.fixture
@@ -109,4 +111,4 @@ def test_OnCipherButtonClickedThenEncryptionManagerReceivesCorrectFile(Encryptio
     EncryptionTool.encryptionManager.onCipherButtonClick = MagicMock()
 
     EncryptionTool.onCipherButtonClick(None)
-    EncryptionTool.encryptionManager.onCipherButtonClick.assert_called_once_with('ArbitraryFile')
+    EncryptionTool.encryptionManager.onCipherButtonClick.assert_called_once()

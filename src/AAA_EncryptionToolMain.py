@@ -81,7 +81,7 @@ class EncryptionTool:
         print('cipher button clicked')
         if self.selectedFile != None:
             print(f'\t{self.selectedFile} chosen for encryption')
-            self.encryptionManager.onCipherButtonClick(self.selectedFile)        
+            self.encryptionManager.onCipherButtonClick()        
 
 ###########################################################################
     def onContentSelectionChanged(self, treeViewSelection):
