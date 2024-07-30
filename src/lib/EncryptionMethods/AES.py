@@ -23,7 +23,7 @@ def Encrypt(pathToFile: str, key: str):
         return
     
     paddedKey = PadKey(key)
-    print(f'AES - Encrypting: \n\tpathToFile = {pathToFile}\n\tKey = {key}, padded key = {paddedKey}\n\tOutput file will be: {outputFile}')
+    print(f'AES - Encrypting: \n\tpathToFile = {pathToFile}\n\tOutput file will be: {outputFile}')
 
     with open(pathToFile, 'rb') as file:
         fileData = file.read()
@@ -40,7 +40,7 @@ def Encrypt(pathToFile: str, key: str):
 def Decrypt(pathToFile : str, key : str):
     substringCount = -len(const.ENCRYPTED_FILE_ENDING)
     outputFile = pathToFile[:substringCount]
-    print(f'AES - Decrypting : \n\tpathToFile = {pathToFile}\n\tKey = {key}\n\tOutput file will be: {outputFile}')
+    print(f'AES - Decrypting : \n\tpathToFile = {pathToFile}\n\tOutput file will be: {outputFile}')
 
     key = key.encode('utf-8')
     paddedKey = PadKey(key)
