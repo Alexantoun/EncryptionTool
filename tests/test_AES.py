@@ -1,11 +1,8 @@
-import Crypto.Random
 import pytest
 from unittest.mock import MagicMock, mock_open, patch, call
 import random, string
 import lib.EncryptionMethods.AES as AES_METHODS
-import Crypto.Cipher.AES
 from Crypto.Util.Padding import unpad, pad
-from Crypto.Random import get_random_bytes
 
 FIRST_KEY = 0
 SECOND_KEY = 1
@@ -28,11 +25,9 @@ def getPaddingString(length) -> str:
 
 @pytest.fixture
 def MockCipher(mocker):
-    mocker.patch('Crypto.Cipher.AES')
-    mocker.patch('Crypto.Random.get_random_bytes', 
-                 return_value=RANDOM_BYTES)
-
-    return mocker
+    mock_aes_new = mocker.patch('lib.EncryptionMethods.AES.AES.new', return_value = MagicMock())  
+    mock_random_bytes = mocker.patch('lib.EncryptionMethods.AES.get_random_bytes', return_value = RANDOM_BYTES)  
+    return mock_aes_new
 
 def test_GivenKeyOfArbitraryLengthExpectPadKeyToReturnPaddedKeyUpToTheNextAcceptableKeyLength():
     key = generateRandomKey(0, 16)
@@ -61,18 +56,17 @@ def test_GivenKeyOfArbitraryLengthExpectPadKeyToReturnPaddedKeyUpToTheNextAccept
 
 @patch("builtins.open", new_callable=mock_open, read_data=b"mocked file data")
 def test_OnAESEncryptExpectEncryptedCopyOfSelectedFile(mock_open, MockCipher):
-    result = get_random_bytes(16)
-    assert result == RANDOM_BYTES
+    newMock = MockCipher
+    result = AES_METHODS.get_random_bytes(16)
+    assert result == RANDOM_BYTES 
 
-    AESMock = Crypto.Cipher.AES.return_value
     AES_METHODS.Encrypt('test_file.txt', 'someKey')
     
-    # AESMock.new.assert_called_once_with(AES_METHODS.PadKey(b'some_key')
-    #     , Crypto.Cipher.AES.MODE_CBC
-    #     , RANDOM_BYTES)
+    newMock.assert_called_once_with(
+        AES_METHODS.PadKey(b'someKey'), 
+        AES_METHODS.AES.MODE_CBC, 
+        RANDOM_BYTES
+    )
 
-
-    # mock_open.assert_called_once_with('test_file.txt', 'rb')
     mock_open.assert_any_call('test_file.txt', 'rb')
     mock_open.assert_any_call('test_file.txt.enc', 'wb')
-
