@@ -2,11 +2,7 @@ import pytest
 from unittest.mock import MagicMock, mock_open, patch, call
 import random, string
 import lib.EncryptionMethods.AES as AES_METHODS
-from Crypto.Util.Padding import unpad, pad
-
-FIRST_KEY = 0
-SECOND_KEY = 1
-THRID_KEY = 2
+import Crypto.Cipher.AES
 
 RANDOM_BYTES = b'\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0A\x0B\x0C\x0D\x0E\x0F\x10'
 
@@ -23,9 +19,16 @@ def getPaddingString(length) -> str:
     padding = ''.encode('utf-8').ljust(length, b'\0')
     return padding
 
+def readSideEffect(param=-1):
+    if param == -1:
+        return RANDOM_BYTES + b'someData'
+    else:
+        return RANDOM_BYTES
+
 @pytest.fixture
 def MockCipher(mocker):
-    mock_aes_new = mocker.patch('lib.EncryptionMethods.AES.AES.new', return_value = MagicMock())  
+    mock_aes_new = mocker.patch('lib.EncryptionMethods.AES.AES.new', return_value = MagicMock())
+    mock_aes_new.decrypt.return_value = 'someData'
     mock_random_bytes = mocker.patch('lib.EncryptionMethods.AES.get_random_bytes', return_value = RANDOM_BYTES)  
     return mock_aes_new
 
@@ -70,3 +73,23 @@ def test_OnAESEncryptExpectEncryptedCopyOfSelectedFile(mock_open, MockCipher):
 
     mock_open.assert_any_call('test_file.txt', 'rb')
     mock_open.assert_any_call('test_file.txt.enc', 'wb')
+    
+@patch("builtins.open", new_callable=mock_open, read_data=b"mocked file data")
+def test_OnEASDecryptExpectDecryptedCopyOfSelectedFile(mock_open, MockCipher):
+    newMock = MockCipher
+    fileHandler = mock_open.return_value
+    fileHandler.read.side_effect = readSideEffect
+    AES_METHODS.Decrypt('test_file.txt.enc', 'someKey')
+
+    newMock.assert_called_once_with(
+        AES_METHODS.PadKey(b'someKey'),
+        AES_METHODS.AES.MODE_CBC,
+        RANDOM_BYTES
+    )
+
+    fileHandler.read.assert_has_calls([call(AES_METHODS.BLOCK_SIZE), call()])
+    newMock.decrypt.assert_called_once()
+
+
+    # 140423822902800
+    # 140423824698528
