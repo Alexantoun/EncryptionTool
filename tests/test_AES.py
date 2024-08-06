@@ -27,10 +27,12 @@ def readSideEffect(param=-1):
 
 @pytest.fixture
 def MockCipher(mocker):
-    mock_aes_new = mocker.patch('lib.EncryptionMethods.AES.AES.new', return_value = MagicMock())
-    mock_aes_new.decrypt.return_value = 'someData'
-    mock_random_bytes = mocker.patch('lib.EncryptionMethods.AES.get_random_bytes', return_value = RANDOM_BYTES)  
-    return mock_aes_new
+    mock_cipher = MagicMock()
+    mock_cipher.decrypt.return_value = b'decrypted_data'  # Set return value for decrypt
+    mock_aes_new = mocker.patch('lib.EncryptionMethods.AES.AES.new', return_value=mock_cipher)
+    mocker.patch('lib.EncryptionMethods.AES.get_random_bytes', return_value=RANDOM_BYTES)
+    
+    return mock_aes_new, mock_cipher
 
 def test_GivenKeyOfArbitraryLengthExpectPadKeyToReturnPaddedKeyUpToTheNextAcceptableKeyLength():
     key = generateRandomKey(0, 16)
@@ -59,7 +61,7 @@ def test_GivenKeyOfArbitraryLengthExpectPadKeyToReturnPaddedKeyUpToTheNextAccept
 
 @patch("builtins.open", new_callable=mock_open, read_data=b"mocked file data")
 def test_OnAESEncryptExpectEncryptedCopyOfSelectedFile(mock_open, MockCipher):
-    newMock = MockCipher
+    newMock, unused = MockCipher
     result = AES_METHODS.get_random_bytes(16)
     assert result == RANDOM_BYTES 
 
@@ -76,8 +78,8 @@ def test_OnAESEncryptExpectEncryptedCopyOfSelectedFile(mock_open, MockCipher):
     
 @patch("builtins.open", new_callable=mock_open, read_data=b"mocked file data")
 def test_OnEASDecryptExpectDecryptedCopyOfSelectedFile(mock_open, MockCipher):
-    newMock = MockCipher
-    fileHandler = mock_open.return_value
+    newMock, decryptMock = MockCipher
+    fileHandler = mock_open()
     fileHandler.read.side_effect = readSideEffect
     AES_METHODS.Decrypt('test_file.txt.enc', 'someKey')
 
@@ -88,8 +90,5 @@ def test_OnEASDecryptExpectDecryptedCopyOfSelectedFile(mock_open, MockCipher):
     )
 
     fileHandler.read.assert_has_calls([call(AES_METHODS.BLOCK_SIZE), call()])
-    newMock.decrypt.assert_called_once()
-
-
-    # 140423822902800
-    # 140423824698528
+    decryptMock.decrypt.assert_called_once_with(RANDOM_BYTES + b'someData')
+    fileHandler.write.assert_called_once()
