@@ -3,8 +3,11 @@ from unittest.mock import MagicMock, mock_open, patch, call
 import random, string
 import lib.EncryptionMethods.AES as AES_METHODS
 import Crypto.Cipher.AES
+from Crypto.Util.Padding import pad
 
 RANDOM_BYTES = b'\x01\x02\x03\x04\x05\x06\x07\x08\x09\x0A\x0B\x0C\x0D\x0E\x0F\x10'
+DECRYPTED_DATA = b'decrypted data'
+ENCRYPTED_DATA = b'encrypted data'
 
 def generateRandomKey(lowerBound, upperBound) -> str:
     chars = string.ascii_letters + string.digits + string.punctuation
@@ -26,13 +29,22 @@ def readSideEffect(param=-1):
         return RANDOM_BYTES
 
 @pytest.fixture
-def MockCipher(mocker):
+def MockCipherDecrypt(mocker):
     mock_cipher = MagicMock()
-    mock_cipher.decrypt.return_value = b'decrypted_data'  # Set return value for decrypt
+    mock_cipher.decrypt.return_value = DECRYPTED_DATA  # Set return value for decrypt
+    mock_aes_new = mocker.patch('lib.EncryptionMethods.AES.AES.new', return_value=mock_cipher)
+    mocker.patch('lib.EncryptionMethods.AES.get_random_bytes', return_value=RANDOM_BYTES)
+
+    return mock_aes_new, mock_cipher.decrypt
+
+@pytest.fixture
+def MockCipherEncrypt(mocker):
+    mock_cipher = MagicMock()
+    mock_cipher.encrypt.return_value = ENCRYPTED_DATA 
     mock_aes_new = mocker.patch('lib.EncryptionMethods.AES.AES.new', return_value=mock_cipher)
     mocker.patch('lib.EncryptionMethods.AES.get_random_bytes', return_value=RANDOM_BYTES)
     
-    return mock_aes_new, mock_cipher
+    return mock_aes_new, mock_cipher.encrypt
 
 def test_GivenKeyOfArbitraryLengthExpectPadKeyToReturnPaddedKeyUpToTheNextAcceptableKeyLength():
     key = generateRandomKey(0, 16)
@@ -60,8 +72,10 @@ def test_GivenKeyOfArbitraryLengthExpectPadKeyToReturnPaddedKeyUpToTheNextAccept
     assert paddedKey[len(key):] == getPaddingString(keyLengthDelta)
 
 @patch("builtins.open", new_callable=mock_open, read_data=b"mocked file data")
-def test_OnAESEncryptExpectEncryptedCopyOfSelectedFile(mock_open, MockCipher):
-    newMock, unused = MockCipher
+def test_OnAESEncryptExpectEncryptedCopyOfSelectedFile(mock_open, MockCipherEncrypt):
+    newMock, encryptMock = MockCipherEncrypt
+    fileHandler = mock_open.return_value
+    
     result = AES_METHODS.get_random_bytes(16)
     assert result == RANDOM_BYTES 
 
@@ -72,23 +86,34 @@ def test_OnAESEncryptExpectEncryptedCopyOfSelectedFile(mock_open, MockCipher):
         AES_METHODS.AES.MODE_CBC, 
         RANDOM_BYTES
     )
-
+    
+    fileData = pad(b'mocked file data', Crypto.Cipher.AES.block_size)
+    encryptMock.assert_called_once_with(fileData)
+    
     mock_open.assert_any_call('test_file.txt', 'rb')
     mock_open.assert_any_call('test_file.txt.enc', 'wb')
+    fileHandler.read.assert_called_once()
+    fileHandler.write.assert_called_once_with(RANDOM_BYTES + ENCRYPTED_DATA)
+
     
 @patch("builtins.open", new_callable=mock_open, read_data=b"mocked file data")
-def test_OnEASDecryptExpectDecryptedCopyOfSelectedFile(mock_open, MockCipher):
-    newMock, decryptMock = MockCipher
-    fileHandler = mock_open()
+def test_OnEASDecryptExpectDecryptedCopyOfSelectedFile(mock_open, MockCipherDecrypt):
+    newMock, decryptMock = MockCipherDecrypt
+    fileHandler = mock_open.return_value
     fileHandler.read.side_effect = readSideEffect
-    AES_METHODS.Decrypt('test_file.txt.enc', 'someKey')
+    
+    with patch('lib.EncryptionMethods.AES.unpad', return_value = DECRYPTED_DATA):
+        AES_METHODS.Decrypt('test_file.txt.enc', 'someKey')
 
-    newMock.assert_called_once_with(
-        AES_METHODS.PadKey(b'someKey'),
-        AES_METHODS.AES.MODE_CBC,
-        RANDOM_BYTES
-    )
+        newMock.assert_called_once_with(
+            AES_METHODS.PadKey(b'someKey'),
+            AES_METHODS.AES.MODE_CBC,
+            RANDOM_BYTES
+        )
 
-    fileHandler.read.assert_has_calls([call(AES_METHODS.BLOCK_SIZE), call()])
-    decryptMock.decrypt.assert_called_once_with(RANDOM_BYTES + b'someData')
-    fileHandler.write.assert_called_once()
+        decryptMock.assert_called_once_with(RANDOM_BYTES + b'someData')
+        
+        fileHandler.read.assert_has_calls([call(AES_METHODS.BLOCK_SIZE), call()])
+        fileHandler.write.assert_called_once_with(DECRYPTED_DATA)
+        mock_open.assert_any_call('test_file.txt', 'wb')
+        mock_open.assert_any_call('test_file.txt.enc', 'rb')

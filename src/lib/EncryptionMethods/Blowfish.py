@@ -9,7 +9,7 @@ BLOCK_SIZE = Blowfish.block_size
 def Encrypt(pathToFile : str, key : str):
     outputFile = pathToFile + const.ENCRYPTED_FILE_ENDING
     key = key.encode('utf-8')
-    print(f'Blowfish - Encrypting: \n\tpathToFile = {pathToFile}\n\tKey = {key}\n\tOutput file will be: {outputFile}')
+    print(f'Blowfish - Encrypting: \n\tpathToFile = {pathToFile}\n\tOutput file will be: {outputFile}')
     
     initVector = get_random_bytes(BLOCK_SIZE)
     cipher = Blowfish.new(key, Blowfish.MODE_CBC, initVector) #create new cipher object
@@ -27,7 +27,7 @@ def Encrypt(pathToFile : str, key : str):
 def Decrypt(pathToFile : str, key : str):
     substringCount = -len(const.ENCRYPTED_FILE_ENDING)
     outputFile = pathToFile[:substringCount]
-    print(f'Blowfish - Decrypting : \n\tpathToFile = {pathToFile}\n\tKey = {key}\n\tOutput file will be: {outputFile}')
+    print(f'Blowfish - Decrypting : \n\tpathToFile = {pathToFile}\n\tOutput file will be: {outputFile}')
 
     key = key.encode('utf-8')
 
