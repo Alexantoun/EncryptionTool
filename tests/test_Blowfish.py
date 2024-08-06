@@ -64,9 +64,9 @@ def test_OnBlowfishDecryptExpectDecryptedCopyOfSelectedFile(mock_open, MockCiphe
         Blowfish.Decrypt('test_file.txt.enc', 'someKey')
         
         newMock.assert_called_once_with(
-        b'someKey',
-        Blowfish.Blowfish.MODE_CBC,
-        RANDOM_BYTES
+            b'someKey',
+            Blowfish.Blowfish.MODE_CBC,
+            RANDOM_BYTES
         )
 
         decryptMock.assert_called_once_with(RANDOM_BYTES + b'someData')
