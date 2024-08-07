@@ -29,6 +29,7 @@ def MockCipherDecrypt(mocker):
     mock_blowfish_new = mocker.patch('lib.EncryptionMethods.Blowfish.Blowfish.new', return_value= mock_cipher)
     return mock_blowfish_new, mock_cipher.decrypt
 
+#<<<<<<<<<<<<<<<<<<<< Begin Tests >>>>>>>>>>>>>>>>>>>>
 @patch("builtins.open", new_callable=mock_open, read_data=b"mocked file data")
 def test_OnBlowfishEncryptExpectEncryptedCopyOfSelectedFile(mock_open, MockCipherEncrypt):
     newMock, encryptMock = MockCipherEncrypt
@@ -53,6 +54,7 @@ def test_OnBlowfishEncryptExpectEncryptedCopyOfSelectedFile(mock_open, MockCiphe
     fileHandler.read.assert_called_once()
     fileHandler.write.assert_called_once_with(RANDOM_BYTES + ENCRYPTED_DATA)
 
+###########################################################################
 @patch("builtins.open", new_callable=mock_open, read_data=b"mocked file data")
 def test_OnBlowfishDecryptExpectDecryptedCopyOfSelectedFile(mock_open, MockCipherDecrypt):
     newMock, decryptMock = MockCipherDecrypt
