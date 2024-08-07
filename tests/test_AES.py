@@ -46,6 +46,7 @@ def MockCipherEncrypt(mocker):
     
     return mock_aes_new, mock_cipher.encrypt
 
+#<<<<<<<<<<<<<<<<<<<< Begin Tests >>>>>>>>>>>>>>>>>>>>
 def test_GivenKeyOfArbitraryLengthExpectPadKeyToReturnPaddedKeyUpToTheNextAcceptableKeyLength():
     key = generateRandomKey(0, 16)
     keyLengthDelta = 16 - len(key)    
@@ -71,6 +72,7 @@ def test_GivenKeyOfArbitraryLengthExpectPadKeyToReturnPaddedKeyUpToTheNextAccept
     assert paddedKey[:-keyLengthDelta] == key
     assert paddedKey[len(key):] == getPaddingString(keyLengthDelta)
 
+###########################################################################
 @patch("builtins.open", new_callable=mock_open, read_data=b"mocked file data")
 def test_OnAESEncryptExpectEncryptedCopyOfSelectedFile(mock_open, MockCipherEncrypt):
     newMock, encryptMock = MockCipherEncrypt
@@ -95,7 +97,7 @@ def test_OnAESEncryptExpectEncryptedCopyOfSelectedFile(mock_open, MockCipherEncr
     fileHandler.read.assert_called_once()
     fileHandler.write.assert_called_once_with(RANDOM_BYTES + ENCRYPTED_DATA)
 
-    
+###########################################################################
 @patch("builtins.open", new_callable=mock_open, read_data=b"mocked file data")
 def test_OnEASDecryptExpectDecryptedCopyOfSelectedFile(mock_open, MockCipherDecrypt):
     newMock, decryptMock = MockCipherDecrypt
